@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Moock{% endblock %}
+
+{% block body %}
+<div class="container mb-5">
+    <div class="border rounded border-3 px-5 py-5 bg-light" >
+        <div class="d-flex justify-content-center ">       
+            <h1 class="text-uppercase fw-bolder text-decoration-underline mt-5"style="color:#1350a2;">QU’EST-CE QU’UN MOOK ?</h1>
+        </div>       
+        <div class="fs-5 d-flex justify-content-center mt-5 fw-normal">
+            <p>Un mook est une publication périodique intermédiaire entre la revue et le livre  illustré : il peut être plus fourni qu’un magazine en restant moins conséquent qu’un livre. C’est le format qui nous semble le plus souple et le plus adaptable en terme de numéros, style, etc.
+            </p>
+        </div>
+    </div>
+    <div class="d-flex justify-content-center px-5 py-5 ">       
+        <img src="{{asset('assets/images/Gomette 2.png')}}" width="60px" height="60px" alt="ma bannière">
+        <img src="{{asset('assets/images/Gomette 3.png')}}" width="80px" height="80px" alt="ma bannière">
+        <img src="{{asset('assets/images/Gomette 2.png')}}" width="60px" height="60px" alt="ma bannière">
+    </div> 
+    <div class="border rounded border-3 px-5 py-5 bg-light" >
+        <div class="d-flex justify-content-center ">       
+            <h1 class="text-uppercase fw-bolder text-decoration-underline mt-5"style="color:#1350a2;">MOOK 1</h1>
+        </div>       
+        <div class="fs-5  mt-5 fw-normal">
+            <p>À la suite d’un échange courant mars 2020 concernant une participation à la journée internationale d’information sur l’autisme (2 avril 2020), l’idée de rassembler des témoignages de personnes autistes a émergé. Nous souhaitions donner la possibilité à chacun de mettre en avant son univers singulier, au-delà des clichés, et avec une liberté totale d’expression à travers des témoignages et des illustrations. Au fur et à mesure, nous avons rassemblé des récits qui composent un patchwork reflétant la diversité de nos univers singuliers, puis sont venus étoffer notre mook un dictionnaire amoureux de l’autisme et un guide pour permettre aux personnes non autistes de mieux appréhender l’autisme et les personnes autistes, afin qu’elles bénéficient d’outils précieux pour co construire une relation respectueuse.</p>
+            <div>
+                <a class="justify-content-center" href="#♥">Téléchargement de la version PDF du Mook 1</a>
+            </div>
+        </div>
+    </div>
+    <div class="d-flex justify-content-center px-5 py-5 ">       
+        <img src="{{asset('assets/images/Gomette 2.png')}}" width="60px" height="60px" alt="ma bannière">
+        <img src="{{asset('assets/images/Gomette 3.png')}}" width="80px" height="80px" alt="ma bannière">
+        <img src="{{asset('assets/images/Gomette 2.png')}}" width="60px" height="60px" alt="ma bannière">
+    </div> 
+    <div class="border rounded border-3 px-5 py-5 bg-light" >
+        <div class="d-flex justify-content-center ">       
+            <h1 class="text-uppercase fw-bolder text-decoration-underline mt-5"style="color:#1350a2;">MOOK 2</h1>
+        </div>       
+        <div class="fs-5 d-flex justify-content-center mt-5 fw-normal">
+            <p>Nous sommes un GEM (Groupe d'Entraide Mutuelle), association « Les Univers Singuliers » . C'est un lieu de rencontre ouvert aux adultes concernées par les Troubles du Spectre de l'Autisme.
+        C'est un espace ressources, qui favorise les échanges, l'entraide, l’information, l'organisation d'activités culturelles et de loisirs ainsi que la construction et la mise en œuvre de projets de sensibilisation à l'autisme.
+        On peut se retrouver dans une ambiance accueillante autour d'un café, d'un repas, d'une activité, travailler sur ses projets ou simplement se poser et se détendre.
+        Deux animateurs à temps complet collaborent avec nous à la dynamique et la gestion global de notre projet associatif.</p>
+        </div>
+    </div>
+</div>   
+{% endblock %}
