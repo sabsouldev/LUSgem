@@ -1,34 +1,39 @@
-<header class="py-3 " style="background-color: #fa7824;">
 
+  <nav class="navbar navbar-expand-lg" style="background-color: #fa7824;">
 
-  <div class="container-fluid mb-5">
-    <a class="navbar-brand" href="{{ path('home') }}"></a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="d-flex justify-content-center display-6 ">
-      <ul class="nav nav-pills ">
-        <li class="nav-item">
-          <a class="nav-link active fw-bolder" style="background-color: #fa7824; color:#FFDF57;" aria-current="page" href="{{ path('home') }}">Home</a>
-        </li>
-       
-        <li class="nav-item">
-        <a class="nav-link fw-bolder" style="background-color: #fa7824; color:#FFDF57;" href="{{ path('moock.index') }}">Moock</a>
-        </li>
-         <li class="nav-item">
-          <a class="nav-link fw-bolder" style="background-color: #fa7824; color:#FFDF57;" href="{{ path('activity.index') }}">Activités</a>
-        </li>
-         <li class="nav-item ">
-          <a class="nav-link fw-bolder" style="background-color: #fa7824; color:#FFDF57;" href="{{ path('presse.index') }}">Presse</a>
-        </li>
-         <li class="nav-item">
-          <a class="nav-link fw-bolder" style="background-color: #fa7824; color:#FFDF57;" href="#">Ressources</a>
-        </li>
-         <li class="nav-item">
-          <a class="nav-link fw-bolder " style="background-color: #fa7824; color:#FFDF57;" href="#">Contact</a>
-        </li>
-        
-      </ul>
+    <div class="container-fluid justify-content-center mb-5 ">
+      <div class="row justify-content-center">
+        <a class="navbar-brand" href="{{ path('home') }}"></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+          <div class=" display-6 ">
+            <ul class="navbar-nav ms-auto">
+              <li class="nav-item">
+                <a class="nav-link active fw-bolder" style="background-color: #fa7824; color:#FFDF57;" aria-current="page" href="{{ path('home') }}">Home</a>
+              </li>
+            
+              <li class="nav-item">
+              <a class="nav-link fw-bolder" style="background-color: #fa7824; color:#FFDF57;" href="{{ path('moock.index') }}">Moock</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link fw-bolder" style="background-color: #fa7824; color:#FFDF57;" href="{{ path('activity.index') }}">Activités</a>
+              </li>
+              <li class="nav-item ">
+                <a class="nav-link fw-bolder" style="background-color: #fa7824; color:#FFDF57;" href="{{ path('presse.index') }}">Presse</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link fw-bolder" style="background-color: #fa7824; color:#FFDF57;" href="#">Ressources</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link fw-bolder " style="background-color: #fa7824; color:#FFDF57;" href="#">Contact</a>
+              </li>
+              
+            </ul>
+          </div>
+        </div>
+      </div>
     </div>
-  </div>
-</header>
+  </nav>
+
