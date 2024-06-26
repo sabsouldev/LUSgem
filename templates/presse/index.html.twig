@@ -1,7 +1,45 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Presse{% endblock %}
+{% block title %}Presse index{% endblock %}
 
 {% block body %}
+    <h1>Presse index</h1>
 
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Titre</th>
+                <th>Content</th>
+                <th>Author</th>
+                <th>Createdat</th>
+                <th>Photo</th>
+                <th>Fichier</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for presse in presses %}
+            <tr>
+                <td>{{ presse.id }}</td>
+                <td>{{ presse.titre }}</td>
+                <td>{{ presse.content }}</td>
+                <td>{{ presse.author }}</td>
+                <td>{{ presse.createdat ? presse.createdat|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ presse.photo }}</td>
+                <td>{{ presse.fichier }}</td>
+                <td>
+                    <a href="{{ path('presse.show', {'id': presse.id}) }}">show</a>
+                    <a href="{{ path('presse.edit', {'id': presse.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="8">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('presse.new') }}">Create new</a>
 {% endblock %}

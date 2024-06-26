@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Presse{% endblock %}
+
+{% block body %}
+    <h1>Presse</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ presse.id }}</td>
+            </tr>
+            <tr>
+                <th>Titre</th>
+                <td>{{ presse.titre }}</td>
+            </tr>
+            <tr>
+                <th>Content</th>
+                <td>{{ presse.content }}</td>
+            </tr>
+            <tr>
+                <th>Author</th>
+                <td>{{ presse.author }}</td>
+            </tr>
+            <tr>
+                <th>Createdat</th>
+                <td>{{ presse.createdat ? presse.createdat|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Photo</th>
+                <td>{{ presse.photo }}</td>
+            </tr>
+            <tr>
+                <th>Fichier</th>
+                <td>{{ presse.fichier }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_presse_index') }}">back to list</a>
+
+    <a href="{{ path('app_presse_edit', {'id': presse.id}) }}">edit</a>
+
+    {{ include('presse/_delete_form.html.twig') }}
+{% endblock %}
