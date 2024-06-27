@@ -6,13 +6,13 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-class MoockController extends AbstractController
+class MookController extends AbstractController
 {
-    #[Route('/moock', name: 'moock.index')]
+    #[Route('/mook', name: 'mook.index')]
     public function index(): Response
     {
-        return $this->render('moock/index.html.twig', [
-            'controller_name' => 'MoockController',
+        return $this->render('mook/index.html.twig', [
+            'controller_name' => 'MookController',
         ]);
     }
 }
