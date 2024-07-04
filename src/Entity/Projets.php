@@ -2,17 +2,20 @@
 
 namespace App\Entity;
 
-use App\Repository\PresseRepository;
+use App\Repository\ProjetsRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: PresseRepository::class)]
-class Presse
+#[ORM\Entity(repositoryClass: ProjetsRepository::class)]
+class Projets
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
+
+    #[ORM\Column]
+    private ?\DateTimeImmutable $created_at = null;
 
     #[ORM\Column(length: 255)]
     private ?string $titre = null;
@@ -21,20 +24,29 @@ class Presse
     private ?string $content = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $autheur = null;
-
-    #[ORM\Column(length: 255)]
     private ?string $illustration = null;
 
     #[ORM\Column(length: 255)]
     private ?string $lien = null;
 
     #[ORM\Column]
-    private ?\DateTimeImmutable $created_at = null;
+    private ?\DateTimeImmutable $ended_at = null;
 
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->created_at;
+    }
+
+    public function setCreatedAt(\DateTimeImmutable $created_at): static
+    {
+        $this->created_at = $created_at;
+
+        return $this;
     }
 
     public function getTitre(): ?string
@@ -57,18 +69,6 @@ class Presse
     public function setContent(string $content): static
     {
         $this->content = $content;
-
-        return $this;
-    }
-
-    public function getAutheur(): ?string
-    {
-        return $this->autheur;
-    }
-
-    public function setAutheur(string $autheur): static
-    {
-        $this->autheur = $autheur;
 
         return $this;
     }
@@ -97,14 +97,14 @@ class Presse
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeImmutable
+    public function getEndedAt(): ?\DateTimeImmutable
     {
-        return $this->created_at;
+        return $this->ended_at;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $created_at): static
+    public function setEndedAt(\DateTimeImmutable $ended_at): static
     {
-        $this->created_at = $created_at;
+        $this->ended_at = $ended_at;
 
         return $this;
     }

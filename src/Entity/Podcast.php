@@ -2,12 +2,12 @@
 
 namespace App\Entity;
 
-use App\Repository\PresseRepository;
+use App\Repository\PodcastRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: PresseRepository::class)]
-class Presse
+#[ORM\Entity(repositoryClass: PodcastRepository::class)]
+class Podcast
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]

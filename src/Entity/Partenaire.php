@@ -2,12 +2,12 @@
 
 namespace App\Entity;
 
-use App\Repository\PresseRepository;
+use App\Repository\PartenaireRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: PresseRepository::class)]
-class Presse
+#[ORM\Entity(repositoryClass: PartenaireRepository::class)]
+class Partenaire
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -21,16 +21,10 @@ class Presse
     private ?string $content = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $autheur = null;
-
-    #[ORM\Column(length: 255)]
     private ?string $illustration = null;
 
     #[ORM\Column(length: 255)]
     private ?string $lien = null;
-
-    #[ORM\Column]
-    private ?\DateTimeImmutable $created_at = null;
 
     public function getId(): ?int
     {
@@ -61,18 +55,6 @@ class Presse
         return $this;
     }
 
-    public function getAutheur(): ?string
-    {
-        return $this->autheur;
-    }
-
-    public function setAutheur(string $autheur): static
-    {
-        $this->autheur = $autheur;
-
-        return $this;
-    }
-
     public function getIllustration(): ?string
     {
         return $this->illustration;
@@ -93,18 +75,6 @@ class Presse
     public function setLien(string $lien): static
     {
         $this->lien = $lien;
-
-        return $this;
-    }
-
-    public function getCreatedAt(): ?\DateTimeImmutable
-    {
-        return $this->created_at;
-    }
-
-    public function setCreatedAt(\DateTimeImmutable $created_at): static
-    {
-        $this->created_at = $created_at;
 
         return $this;
     }

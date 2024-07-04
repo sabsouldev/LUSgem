@@ -13,7 +13,6 @@
               <li class="nav-item">
                 <a class="nav-link active fw-bolder" style="background-color: #fa7824; color:#FFDF57;" aria-current="page" href="{{ path('home') }}">Home</a>
               </li>
-            
               <li class="nav-item">
               <a class="nav-link fw-bolder" style="background-color: #fa7824; color:#FFDF57;" href="{{ path('mook.index') }}">Mook</a>
               </li>
@@ -24,15 +23,19 @@
                 <a class="nav-link fw-bolder" style="background-color: #fa7824; color:#FFDF57;" href="{{ path('presse.index') }}">Presse</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link fw-bolder" style="background-color: #fa7824; color:#FFDF57;" href="#">Ressources</a>
+                <a class="nav-link fw-bolder " style="background-color: #fa7824; color:#FFDF57;" href="{{ path('projets.index') }}">Projets</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link fw-bolder " style="background-color: #fa7824; color:#FFDF57;" href="#">Projets</a>
+                <a class="nav-link fw-bolder " style="background-color: #fa7824; color:#FFDF57;" href="{{ path('contact.index') }}">Contact</a>
               </li>
-              <li class="nav-item">
-                <a class="nav-link fw-bolder " style="background-color: #fa7824; color:#FFDF57;" href="#">Contact</a>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle fw-bolder" style="background-color: #fa7824; color:#FFDF57;" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Ressources</a>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item fw-bolder" style="background-color: #fa7824; color:#FFDF57;" href="{{ path('podcast.index') }}">Podcast</a></li>
+                  <li><a class="dropdown-item fw-bolder" style="background-color: #fa7824; color:#FFDF57;" href="{{ path('articles.index') }}">Articles</a></li>
+                  <li><a class="dropdown-item fw-bolder" style="background-color: #fa7824; color:#FFDF57;" href="{{ path('partenaires.index') }}">Nos Partenaires</a></li>
+                </ul>
               </li>
-              
             </ul>
           </div>
         </div>

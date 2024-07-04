@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Articles{% endblock %}
+
+{% block body %}
+<div class="container">
+    <section class="row  mx-auto">
+        <div class="row col-12 mx-auto">
+            <h1>Articles</h1>
+        </div>
+            
+                
+        {% for article in articles %}
+        <div class="col g-1 py-3">   
+            <div class="card mb-3 mx-auto" style="width: 18rem;">
+                <img src="{{ asset('upload/'~ article.illustration)}}" class="card-img-top" alt="...">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-center ">{{article.name}}</h5>
+                    <a href="{{path('articles.show', {'id': article.id})}}" class="btn btn-primary" style="background-color: #D199B6" >Voir plus</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </section>
+</div>    
+{% endblock %}
