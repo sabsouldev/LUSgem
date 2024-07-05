@@ -1,0 +1,28 @@
+{% block title %}Modifier un article{% endblock %}
+
+{% block body %}
+    
+        <section class="container pt-4">
+            <div class="row">
+                <div class="col">
+
+                    <h1>Modifier un article</h1>
+                        {{ form_start(articleForm) }}
+                            <fieldset class="mb-3">
+                                {{ form_row(articleForm.illustration) }}
+                                {{ form_row(articleForm.titre) }} 
+                                {{ form_row(articleForm.content) }}
+                                {{ form_row(articleForm.autheur) }}
+                                {{ form_row(articleForm.lien) }}
+                                {{ form_row(articleForm.created_at) }}
+
+                    <button type="submit" class="btn my-3" style="background-color: #D199B6" ;>Modifier le article</button>
+                    {{ form_end(articleForm) }}
+                </div>
+            </div>
+        </section>
+
+        {# {{ include('articles/_form.html.twig', {'button_label': 'Update'}) }} #}
+
+        <a href="{{ path('articles.index') }}"class="btn btn-primary" style="background-color: #D199B6" >Retour à la liste</a>
+{% endblock %}

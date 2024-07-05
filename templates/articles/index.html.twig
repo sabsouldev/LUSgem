@@ -15,10 +15,12 @@
             <div class="card mb-3 mx-auto" style="width: 18rem;">
                 <img src="{{ asset('upload/'~ article.illustration)}}" class="card-img-top" alt="...">
                 <div class="card-body text-center">
-                    <h5 class="card-title text-center ">{{article.name}}</h5>
+                    <h5 class="card-title text-center ">{{article.titre}}</h5>
+                    {#<p class="card-text">{{article.content}}</p>#}
                     <a href="{{path('articles.show', {'id': article.id})}}" class="btn btn-primary" style="background-color: #D199B6" >Voir plus</a>
                 </div>
             </div>
+             {# <div class="card-footer text-body-secondary">{{article.created_at}}</div>#}
         </div>
         {% endfor %}
     </section>

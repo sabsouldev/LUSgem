@@ -1,0 +1,28 @@
+{% block title %}Création presse{% endblock %}
+
+{% block body %}
+    <section class="container position-relative">
+        <div class="row">
+            <div class="col">
+
+                <h1>Création de nouveaux articles de presses</h1>
+                     {{ form_start(presseForm) }}
+                        <fieldset class="mb-3">
+                            {{ form_row(presseForm.illustration) }}
+                                {{ form_row(presseForm.titre) }} 
+                                {{ form_row(presseForm.content) }}
+                                {{ form_row(presseForm.autheur) }}
+                                {{ form_row(presseForm.lien) }}
+                                {{ form_row(presseForm.created_at) }}
+
+                 <button type="submit" class="btn my-3" style="background-color: #D199B6" ;>Ajouter un presse</button>
+                {{ form_end(presseForm) }}
+            </div>
+        </div>
+    </section>
+               
+
+    
+
+    <a href="{{ path('presses.index') }}"class="btn btn-primary" style="background-color: #D199B6">back to list</a>
+{% endblock %}

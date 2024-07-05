@@ -1,0 +1,27 @@
+{% block title %}Création d'un partenaire{% endblock %}
+
+{% block body %}
+    <section class="container position-relative">
+        <div class="row">
+            <div class="col">
+
+                <h1>Création d'un nouveaux partenaire</h1>
+                     {{ form_start(partenairesForm) }}
+                        <fieldset class="mb-3">
+                                {{ form_row(partenaires.illustration) }}
+                                {{ form_row(partenaires.titre) }} 
+                                {{ form_row(partenaires.content) }}
+                                
+                                {{ form_row(partenaires.lien) }}
+
+                 <button type="submit" class="btn my-3" style="background-color: #D199B6" ;>Ajouter un partenaire</button>
+                {{ form_end(partenairesForm) }}
+            </div>
+        </div>
+    </section>
+               
+
+    
+
+    <a href="{{ path('partenaires.index') }}"class="btn btn-primary" style="background-color: #D199B6">back to list</a>
+{% endblock %}
