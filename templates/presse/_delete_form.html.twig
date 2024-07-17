@@ -1,4 +1,0 @@
-<form method="post" action="{{ path('pressedelete', {'id': presse.id}) }}" onsubmit="return confirm('Are you sure you want to delete this item?');">
-    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ presse.id) }}">
-    <button class="btn"class="btn btn-primary" style="background-color: #D199B6" >Supprimer</button>
-</form>

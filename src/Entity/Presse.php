@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\PresseRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -29,8 +31,25 @@ class Presse
     #[ORM\Column(length: 255)]
     private ?string $lien = null;
 
-    #[ORM\Column]
-    private ?\DateTimeImmutable $created_at = null;
+   
+
+    /**
+     * @var Collection<int, Category>
+     */
+    #[ORM\ManyToMany(targetEntity: Category::class, mappedBy: 'presse')]
+    private Collection $categories;
+
+    #[ORM\Column(length: 255)]
+    private ?string $slug = null;
+
+    #[ORM\Column(length: 100)]
+    private ?string $featuredText = null;
+
+    public function __construct()
+    {
+        
+        $this->categories = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -97,14 +116,54 @@ class Presse
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeImmutable
+    
+    /**
+     * @return Collection<int, Category>
+     */
+    public function getCategories(): Collection
     {
-        return $this->created_at;
+        return $this->categories;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $created_at): static
+    public function addCategory(Category $category): static
     {
-        $this->created_at = $created_at;
+        if (!$this->categories->contains($category)) {
+            $this->categories->add($category);
+            $category->addPresse($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCategory(Category $category): static
+    {
+        if ($this->categories->removeElement($category)) {
+            $category->removePresse($this);
+        }
+
+        return $this;
+    }
+
+    public function getSlug(): ?string
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(string $slug): static
+    {
+        $this->slug = $slug;
+
+        return $this;
+    }
+
+    public function getFeaturedText(): ?string
+    {
+        return $this->featuredText;
+    }
+
+    public function setFeaturedText(string $featuredText): static
+    {
+        $this->featuredText = $featuredText;
 
         return $this;
     }
