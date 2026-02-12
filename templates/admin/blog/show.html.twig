@@ -1,0 +1,64 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ post.title }} | Admin blog{% endblock %}
+
+{% block body %}
+<div class="container">
+    <article class="content-panel blog-post-card">
+        <h1>{{ post.title }}</h1>
+        <p class="blog-meta">Date: {{ post.publish_date }}</p>
+
+        <div class="tag-row">
+            {% for category in post.categories %}
+                <span class="blog-tag">{{ category }}</span>
+            {% endfor %}
+        </div>
+
+        {% if post.contents is not empty %}
+            {% for block in post.contents %}
+                <p>{{ block|nl2br }}</p>
+            {% endfor %}
+        {% endif %}
+
+        {% if post.media is defined and post.media|length > 0 %}
+            <section class="blog-media-grid">
+                <h2>Fichiers associes</h2>
+                {% for media in post.media %}
+                    <article class="blog-media-item">
+                        <h3>{{ media.name }}</h3>
+                        <p class="blog-meta">Type: {{ media.type|upper }}</p>
+
+                        {% if media.type == 'image' %}
+                            <img src="{{ media.path }}" alt="{{ media.name }}" loading="lazy">
+                        {% elseif media.type == 'video' %}
+                            <video controls preload="metadata">
+                                <source src="{{ media.path }}" type="{{ media.mime_type|default('video/mp4') }}">
+                                Votre navigateur ne prend pas en charge la video.
+                            </video>
+                        {% elseif media.type == 'audio' %}
+                            <audio controls preload="none">
+                                <source src="{{ media.path }}" type="{{ media.mime_type|default('audio/mpeg') }}">
+                                Votre navigateur ne prend pas en charge l'audio.
+                            </audio>
+                        {% endif %}
+
+                        <div class="button-row">
+                            <a class="btn-secondary" href="{{ media.path }}" target="_blank" rel="noopener">Consulter</a>
+                            <a class="btn-primary" href="{{ media.path }}" download>Telecharger</a>
+                        </div>
+                    </article>
+                {% endfor %}
+            </section>
+        {% endif %}
+
+        <div class="button-row">
+            <a class="btn-secondary" href="{{ path('app_admin_blog_index') }}">Retour liste</a>
+            <a class="btn-primary" href="{{ path('app_admin_blog_edit', {id: post.id}) }}">Modifier</a>
+            <form method="post" action="{{ path('app_admin_blog_delete', {id: post.id}) }}" onsubmit="return confirm('Confirmer la suppression ?');">
+                <input type="hidden" name="_token" value="{{ csrf_token('admin_blog_delete_' ~ post.id) }}">
+                <button type="submit" class="btn-primary">Supprimer</button>
+            </form>
+        </div>
+    </article>
+</div>
+{% endblock %}

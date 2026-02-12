@@ -1,0 +1,76 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Blog adherents | Les Univers Singuliers{% endblock %}
+
+{% block body %}
+<div class="container">
+    <section class="content-panel">
+        <h1>Blog adherents</h1>
+        <p>Affichage des 6 derniers articles par defaut. Filtrage possible par categorie et par date.</p>
+
+        {% for type, messages in app.flashes %}
+            {% for message in messages %}
+                <p class="flash flash-{{ type }}">{{ message }}</p>
+            {% endfor %}
+        {% endfor %}
+    </section>
+
+    <section class="content-panel">
+        <form method="get" class="grid-two">
+            <div>
+                <label for="category">Categorie</label>
+                <select id="category" name="category">
+                    <option value="">Toutes</option>
+                    {% for category in available_categories %}
+                        <option value="{{ category }}" {% if selected_category == category %}selected{% endif %}>{{ category }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div>
+                <label for="date">Date</label>
+                <input id="date" name="date" type="date" value="{{ selected_date }}">
+            </div>
+
+            <div class="button-row">
+                <button type="submit" class="btn-primary">Rechercher</button>
+                {% if has_filters %}
+                    <a class="btn-secondary" href="{{ path('app_member_blog_index') }}">Reinitialiser</a>
+                {% endif %}
+            </div>
+        </form>
+
+    </section>
+
+    <section class="member-post-grid">
+        {% if posts is empty %}
+            <article class="content-panel">
+                <p>Aucun article ne correspond a la recherche.</p>
+            </article>
+        {% else %}
+            {% for post in posts %}
+                <article class="content-panel blog-post-card">
+                    <h2>{{ post.title }}</h2>
+                    <p class="blog-meta">Date: {{ post.publish_date }}</p>
+
+                    <div class="tag-row">
+                        {% for category in post.categories %}
+                            <span class="blog-tag">{{ category }}</span>
+                        {% endfor %}
+                    </div>
+
+                    <p>{{ post.excerpt }}</p>
+
+                    {% if post.media is defined and post.media|length > 0 %}
+                        <p class="blog-meta">{{ post.media|length }} fichier(s) associe(s)</p>
+                    {% endif %}
+
+                    <div class="button-row">
+                        <a class="btn-primary" href="{{ path('app_member_blog_show', {id: post.id}) }}">Lire</a>
+                    </div>
+                </article>
+            {% endfor %}
+        {% endif %}
+    </section>
+</div>
+{% endblock %}

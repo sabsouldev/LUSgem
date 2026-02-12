@@ -1,0 +1,44 @@
+﻿{% extends 'base.html.twig' %}
+
+{% block title %}Contact | Les Univers Singuliers{% endblock %}
+
+{% block body %}
+<div class="container">
+    <section class="content-panel">
+        <h1>Contact</h1>
+        <p>Pour toute demande institutionnelle, partenariat ou renseignement, utilisez les coordonnées ci-dessous ou le formulaire sécurisé.</p>
+    </section>
+
+    <section class="grid-two">
+        <article class="content-panel">
+            <h2>Coordonnées</h2>
+            <ul class="contact-list">
+                <li><strong>Adresse :</strong> (à compléter par le bureau)</li>
+                <li><strong>Téléphone :</strong> (à compléter)</li>
+                <li><strong>Email :</strong> (à compléter)</li>
+                <li><strong>Horaires d'accueil :</strong> (à compléter)</li>
+            </ul>
+        </article>
+
+        <article class="content-panel">
+            <h2>Formulaire de contact sécurisé</h2>
+            <form method="post" action="#" class="contact-form">
+                <input type="hidden" name="_token" value="{{ csrf_token('contact_form') }}">
+                <label for="name">Nom</label>
+                <input id="name" name="name" type="text" required>
+
+                <label for="email">Email</label>
+                <input id="email" name="email" type="email" required>
+
+                <label for="subject">Objet</label>
+                <input id="subject" name="subject" type="text" required>
+
+                <label for="message">Message</label>
+                <textarea id="message" name="message" rows="6" required></textarea>
+
+                <button type="submit" class="btn-primary">Envoyer</button>
+            </form>
+        </article>
+    </section>
+</div>
+{% endblock %}

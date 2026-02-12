@@ -1,0 +1,29 @@
+﻿{% extends 'base.html.twig' %}
+
+{% block title %}Propositions | Les Univers Singuliers{% endblock %}
+
+{% block body %}
+<div class="container">
+    <section class="content-panel">
+        <h1>Propositions</h1>
+        <p>Transmettez une idée d'activité, d'organisation ou un message confidentiel au bureau.</p>
+
+        <form method="post" action="#" class="contact-form">
+            <input type="hidden" name="_token" value="{{ csrf_token('member_proposition') }}">
+
+            <label for="topic">Sujet</label>
+            <input id="topic" name="topic" type="text" required>
+
+            <label for="proposal">Votre proposition</label>
+            <textarea id="proposal" name="proposal" rows="6" required></textarea>
+
+            <label class="checkbox-row" for="confidential">
+                <input id="confidential" name="confidential" type="checkbox" value="1">
+                Message confidentiel au bureau
+            </label>
+
+            <button type="submit" class="btn-primary">Envoyer la proposition</button>
+        </form>
+    </section>
+</div>
+{% endblock %}

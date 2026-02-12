@@ -1,0 +1,27 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Les Univers Singuliers{% endblock %}</title>
+    <meta name="description" content="Site officiel des Univers Singuliers, GEM pour adultes autistes à Périgueux.">
+    <link rel="stylesheet" href="{{ asset('assets/styles/app.css') }}">
+    {% block stylesheets %}{% endblock %}
+    {% block javascripts %}
+        {% block importmap %}{{ importmap('app') }}{% endblock %}
+    {% endblock %}
+</head>
+<body>
+<a class="skip-link" href="#main-content">Aller au contenu principal</a>
+<div class="decor decor-a" aria-hidden="true"></div>
+<div class="decor decor-b" aria-hidden="true"></div>
+
+{% include 'partials/_header.html.twig' %}
+
+<main id="main-content" class="site-main">
+    {% block body %}{% endblock %}
+</main>
+
+{% include 'partials/_footer.html.twig' %}
+</body>
+</html>

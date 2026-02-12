@@ -1,0 +1,33 @@
+﻿{% extends 'base.html.twig' %}
+
+{% block title %}Comptes rendus | Les Univers Singuliers{% endblock %}
+
+{% block body %}
+<div class="container">
+    <section class="content-panel">
+        <h1>Comptes rendus</h1>
+        <p>Historique des documents internes publiés au format PDF.</p>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Titre</th>
+                    <th>Accès</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Janvier 2026</td>
+                    <td>Compte rendu mensuel</td>
+                    <td><a href="/uploads/comptes-rendus/compte-rendu-2026-01.pdf">PDF</a></td>
+                </tr>
+                <tr>
+                    <td>Décembre 2025</td>
+                    <td>Compte rendu mensuel</td>
+                    <td><a href="/uploads/comptes-rendus/compte-rendu-2025-12.pdf">PDF</a></td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+</div>
+{% endblock %}

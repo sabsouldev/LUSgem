@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Espace adhérent | Les Univers Singuliers{% endblock %}
+
+{% block body %}
+<div class="container">
+    <section class="content-panel">
+        <h1>Vie du GEM</h1>
+        <p>Espace réservé aux adhérents connectés. Les identifiants sont transmis individuellement par l'administration.</p>
+    </section>
+
+    <section class="grid-two">
+        <article class="content-panel">
+            <h2>Planning hebdomadaire</h2>
+            <p>PDF mis à jour chaque semaine.</p>
+            <a class="btn-primary" href="{{ path('app_member_planning') }}">Consulter</a>
+        </article>
+
+        <article class="content-panel">
+            <h2>Comptes rendus</h2>
+            <p>Historique des comptes rendus en PDF.</p>
+            <a class="btn-primary" href="{{ path('app_member_reports') }}">Consulter</a>
+        </article>
+
+        <article class="content-panel">
+            <h2>Newsletter</h2>
+            <p>Articles mensuels et informations internes.</p>
+            <a class="btn-primary" href="{{ path('app_member_newsletter') }}">Lire</a>
+        </article>
+
+        <article class="content-panel">
+            <h2>Propositions</h2>
+            <p>Transmettre une idée ou un message confidentiel au bureau.</p>
+            <a class="btn-primary" href="{{ path('app_member_propositions') }}">Accéder</a>
+        </article>
+            <article class="content-panel">
+            <h2>Blog adherents</h2>
+            <p>Consulter les 6 derniers articles, avec filtres par categorie et date.</p>
+            <a class="btn-primary" href="{{ path('app_member_blog_index') }}">Acceder</a>
+        </article>
+    </section>
+</div>
+{% endblock %}

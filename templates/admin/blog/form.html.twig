@@ -1,0 +1,110 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{% if is_new %}Nouvel article{% else %}Modifier article{% endif %} | Admin blog{% endblock %}
+
+{% block body %}
+<div class="container">
+    <section class="content-panel">
+        <h1>{% if is_new %}Nouvel article{% else %}Modifier article{% endif %}</h1>
+        <p>Formats medias acceptes: PDF, images, videos, podcasts audio.</p>
+
+        {% if errors is not empty %}
+            {% for error in errors %}
+                <p class="flash flash-error">{{ error }}</p>
+            {% endfor %}
+        {% endif %}
+
+        <form method="post" enctype="multipart/form-data" class="contact-form">
+            <input type="hidden" name="_token" value="{{ csrf_token(token_id) }}">
+
+            <label for="title">Titre</label>
+            <input id="title" name="title" type="text" value="{{ post.title }}" required>
+
+            <label for="publish_date">Date</label>
+            <input id="publish_date" name="publish_date" type="date" value="{{ post.publish_date }}" required>
+
+            <label>Categories (plusieurs possibles)</label>
+            <div class="category-grid">
+                {% for category in available_categories %}
+                    <label class="checkbox-row">
+                        <input type="checkbox" name="categories[]" value="{{ category }}" {% if category in post.categories %}checked{% endif %}>
+                        {{ category }}
+                    </label>
+                {% endfor %}
+            </div>
+
+            <label for="categories_custom">Autres categories (separees par des virgules)</label>
+            <input id="categories_custom" name="categories_custom" type="text" placeholder="Ex: Inclusion, Ressources locales">
+
+            <div id="content-blocks" class="blog-content-blocks">
+                {% if post.contents is empty %}
+                    <label for="content_1">Bloc de contenu 1</label>
+                    <textarea id="content_1" name="contents[]" rows="5"></textarea>
+                {% else %}
+                    {% for block in post.contents %}
+                        <label for="content_{{ loop.index }}">Bloc de contenu {{ loop.index }}</label>
+                        <textarea id="content_{{ loop.index }}" name="contents[]" rows="5">{{ block }}</textarea>
+                    {% endfor %}
+                {% endif %}
+            </div>
+
+            <button type="button" id="add-content-block" class="btn-secondary">Ajouter un bloc texte</button>
+
+            {% if post.media is defined and post.media|length > 0 %}
+                <fieldset class="media-fieldset">
+                    <legend>Fichiers existants</legend>
+                    <div class="media-list">
+                        {% for media in post.media %}
+                            <label class="checkbox-row media-row">
+                                <input type="checkbox" name="remove_media[]" value="{{ media.id }}">
+                                Supprimer - {{ media.name }} ({{ media.type|upper }})
+                            </label>
+                        {% endfor %}
+                    </div>
+                </fieldset>
+            {% endif %}
+
+            <label for="media_files">Ajouter des fichiers medias</label>
+            <input id="media_files" name="media_files[]" type="file" multiple accept=".pdf,.jpg,.jpeg,.png,.webp,.gif,.svg,.mp4,.webm,.mov,.ogv,.mp3,.wav,.ogg,.m4a,.aac">
+
+            <div class="button-row">
+                <button type="submit" class="btn-primary">{% if is_new %}Creer{% else %}Enregistrer{% endif %}</button>
+                <a class="btn-secondary" href="{{ path('app_admin_blog_index') }}">Retour</a>
+            </div>
+        </form>
+    </section>
+</div>
+
+<script>
+(function () {
+    var button = document.getElementById('add-content-block');
+    var blocks = document.getElementById('content-blocks');
+
+    if (!button || !blocks) {
+        return;
+    }
+
+    var index = blocks.querySelectorAll('textarea[name="contents[]"]').length;
+
+    button.addEventListener('click', function () {
+        if (index >= 12) {
+            return;
+        }
+
+        index += 1;
+
+        var label = document.createElement('label');
+        label.setAttribute('for', 'content_' + index);
+        label.textContent = 'Bloc de contenu ' + index;
+
+        var textarea = document.createElement('textarea');
+        textarea.id = 'content_' + index;
+        textarea.name = 'contents[]';
+        textarea.rows = 5;
+
+        blocks.appendChild(label);
+        blocks.appendChild(textarea);
+    });
+})();
+</script>
+{% endblock %}

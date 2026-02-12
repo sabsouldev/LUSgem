@@ -1,0 +1,81 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion blog | Administration{% endblock %}
+
+{% block body %}
+<div class="container">
+    <section class="content-panel">
+        <h1>Gestion du blog adherents</h1>
+        <p>CRUD reserve a l'administration. Les articles sont visibles dans l'espace adherent uniquement.</p>
+
+        {% for type, messages in app.flashes %}
+            {% for message in messages %}
+                <p class="flash flash-{{ type }}">{{ message }}</p>
+            {% endfor %}
+        {% endfor %}
+    </section>
+
+    <section class="content-panel">
+        <form method="get" class="grid-two">
+            <div>
+                <label for="category">Categorie</label>
+                <select id="category" name="category">
+                    <option value="">Toutes</option>
+                    {% for category in available_categories %}
+                        <option value="{{ category }}" {% if selected_category == category %}selected{% endif %}>{{ category }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div>
+                <label for="date">Date</label>
+                <input id="date" name="date" type="date" value="{{ selected_date }}">
+            </div>
+
+            <div class="button-row">
+                <button type="submit" class="btn-primary">Rechercher</button>
+                {% if has_filters %}
+                    <a class="btn-secondary" href="{{ path('app_admin_blog_index') }}">Reinitialiser</a>
+                {% endif %}
+                <a class="btn-primary" href="{{ path('app_admin_blog_new') }}">Nouvel article</a>
+            </div>
+        </form>
+    </section>
+
+    <section class="member-post-grid">
+        {% if posts is empty %}
+            <article class="content-panel">
+                <p>Aucun article ne correspond a la recherche.</p>
+            </article>
+        {% else %}
+            {% for post in posts %}
+                <article class="content-panel blog-post-card">
+                    <h2>{{ post.title }}</h2>
+                    <p class="blog-meta">Date: {{ post.publish_date }}</p>
+
+                    <div class="tag-row">
+                        {% for category in post.categories %}
+                            <span class="blog-tag">{{ category }}</span>
+                        {% endfor %}
+                    </div>
+
+                    <p>{{ post.excerpt }}</p>
+
+                    {% if post.media is defined and post.media|length > 0 %}
+                        <p class="blog-meta">{{ post.media|length }} fichier(s) associe(s)</p>
+                    {% endif %}
+
+                    <div class="button-row">
+                        <a class="btn-primary" href="{{ path('app_admin_blog_show', {id: post.id}) }}">Voir</a>
+                        <a class="btn-secondary" href="{{ path('app_admin_blog_edit', {id: post.id}) }}">Modifier</a>
+                        <form method="post" action="{{ path('app_admin_blog_delete', {id: post.id}) }}" onsubmit="return confirm('Confirmer la suppression ?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('admin_blog_delete_' ~ post.id) }}">
+                            <button type="submit" class="btn-primary">Supprimer</button>
+                        </form>
+                    </div>
+                </article>
+            {% endfor %}
+        {% endif %}
+    </section>
+</div>
+{% endblock %}
