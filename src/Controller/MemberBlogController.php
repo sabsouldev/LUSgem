@@ -20,6 +20,7 @@ final class MemberBlogController extends AbstractController
     {
         $posts = $this->readPosts();
 
+        // Filtres en lecture seule (aucune action CRUD cote adherent).
         $selectedCategory = trim((string) $request->query->get('category', ''));
         $selectedDate = trim((string) $request->query->get('date', ''));
 
@@ -38,6 +39,7 @@ final class MemberBlogController extends AbstractController
             return true;
         }));
 
+        // Sans filtre, on limite a 6 articles pour garder une lecture simple cote adherent.
         $hasFilters = $selectedCategory !== '' || $selectedDate !== '';
         $postsToDisplay = $hasFilters ? array_slice($filteredPosts, 0, 100) : array_slice($filteredPosts, 0, 6);
 
@@ -81,6 +83,7 @@ final class MemberBlogController extends AbstractController
         $normalized = [];
         $allowedMediaTypes = ['pdf', 'image', 'video', 'audio'];
 
+        // Mode lecture seule: on normalise les donnees sans exposer d'actions d'ecriture.
         foreach ($decoded as $item) {
             if (!is_array($item)) {
                 continue;
@@ -150,6 +153,7 @@ final class MemberBlogController extends AbstractController
                 }
 
                 $type = (string) ($mediaItem['type'] ?? 'pdf');
+                // Fallback "pdf" si un type media inattendu est rencontre.
                 if (!in_array($type, $allowedMediaTypes, true)) {
                     $type = 'pdf';
                     $hasChanged = true;
@@ -186,6 +190,7 @@ final class MemberBlogController extends AbstractController
         }
 
         usort($normalized, static function (array $a, array $b): int {
+            // Tri du plus recent au plus ancien.
             $dateCompare = strcmp($b['publish_date'], $a['publish_date']);
             if ($dateCompare !== 0) {
                 return $dateCompare;
@@ -205,6 +210,7 @@ final class MemberBlogController extends AbstractController
     {
         $storagePath = $this->getStoragePath();
 
+        // Utilise par la normalisation defensive si le JSON source doit etre corrige.
         $filesystem = new Filesystem();
         $filesystem->mkdir(dirname($storagePath));
 

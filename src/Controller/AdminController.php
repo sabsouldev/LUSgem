@@ -17,6 +17,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[Route('/admin')]
 final class AdminController extends AbstractController
 {
+    // Donnees complementaires adherents hors schema SQL.
     private const MEMBER_PROFILE_STORAGE_RELATIVE_PATH = 'var/data/member-profiles.json';
     private const MEMBER_PROPOSITIONS_STORAGE_RELATIVE_PATH = 'var/data/propositions.json';
 
@@ -38,6 +39,7 @@ final class AdminController extends AbstractController
         $this->ensureDataDirectories();
 
         if ($request->isMethod('POST')) {
+            // Point d'entree unique pour les actions adherents afin de garder une navigation simple.
             $action = (string) $request->request->get('adherent_action');
 
             match ($action) {
@@ -84,6 +86,7 @@ final class AdminController extends AbstractController
             throw $this->createNotFoundException('Impossible de generer le fichier CSV.');
         }
 
+        // Le BOM garantit un affichage correct des accents UTF-8 dans les tableurs.
         fputs($stream, "\xEF\xBB\xBF");
         fputcsv($stream, [
             'id',
@@ -104,6 +107,7 @@ final class AdminController extends AbstractController
         ], ';');
 
         foreach ($users as $user) {
+            // Chaque ligne fusionne la table user SQL + la fiche JSON.
             $profile = $profiles[(string) $user->getId()] ?? [];
 
             fputcsv($stream, [
@@ -150,6 +154,7 @@ final class AdminController extends AbstractController
         $uploadsDir = $projectDir . '/public/uploads';
         $dataDir = $projectDir . '/var/data';
 
+        // Preparation systematique des dossiers de publication.
         $filesystem = new Filesystem();
         $filesystem->mkdir([
             $uploadsDir . '/planning',
@@ -158,6 +163,7 @@ final class AdminController extends AbstractController
             $dataDir,
         ]);
 
+        // Compatibilite: copie des anciens fichiers "moock" vers le dossier "mook".
         $this->migrateLegacyMookFiles($uploadsDir);
 
         if ($request->isMethod('POST')) {
@@ -195,6 +201,7 @@ final class AdminController extends AbstractController
 
     private function handleCreateAccount(Request $request): void
     {
+        // Creation admin-only: aucune inscription publique n'est exposee.
         if (!$this->isCsrfTokenValid('admin_member_create', (string) $request->request->get('_token'))) {
             $this->addFlash('error', 'Jeton CSRF invalide pour la creation de compte.');
 
@@ -238,6 +245,7 @@ final class AdminController extends AbstractController
 
     private function handleResetPassword(Request $request): void
     {
+        // Reinitialisation admin uniquement, avec controle de longueur minimale.
         if (!$this->isCsrfTokenValid('admin_member_reset_password', (string) $request->request->get('_token'))) {
             $this->addFlash('error', 'Jeton CSRF invalide pour la reinitialisation.');
 
@@ -301,6 +309,7 @@ final class AdminController extends AbstractController
             $profiles = [];
         }
 
+        // Les profils sont stockes en JSON pour ajouter des champs admin sans migration SQL.
         $profile = [
             'first_name' => $this->trimMax((string) $request->request->get('first_name', ''), 80),
             'last_name' => $this->trimMax((string) $request->request->get('last_name', ''), 80),
@@ -339,6 +348,7 @@ final class AdminController extends AbstractController
         }
 
         $status = (string) $request->request->get('status', 'Nouveau');
+        // Statuts limites pour conserver un suivi admin coherent.
         if (!in_array($status, ['Nouveau', 'En cours', 'Traitee'], true)) {
             $status = 'Nouveau';
         }
@@ -378,6 +388,7 @@ final class AdminController extends AbstractController
 
     private function handlePlanningUpload(Request $request, string $targetDir): void
     {
+        // Upload remplace toujours le planning courant (nom de fichier fixe).
         if (!$this->isCsrfTokenValid('admin_planning', (string) $request->request->get('_token'))) {
             $this->addFlash('error', 'Jeton CSRF invalide pour le planning.');
 
@@ -397,6 +408,7 @@ final class AdminController extends AbstractController
 
     private function handleReportUpload(Request $request, string $targetDir): void
     {
+        // Compte-rendu versionne par mois (YYYY-MM) dans le nom de fichier.
         if (!$this->isCsrfTokenValid('admin_report', (string) $request->request->get('_token'))) {
             $this->addFlash('error', 'Jeton CSRF invalide pour le compte rendu.');
 
@@ -423,6 +435,7 @@ final class AdminController extends AbstractController
 
     private function handleMookUpload(Request $request, string $targetDir): void
     {
+        // Double token/champs conserves temporairement pour compatibilite ancienne orthographe.
         $csrfToken = (string) $request->request->get('_token');
         if (
             !$this->isCsrfTokenValid('admin_mook', $csrfToken)
@@ -486,6 +499,7 @@ final class AdminController extends AbstractController
 
     private function ensureDataDirectories(): void
     {
+        // Centralise la creation du dossier de stockage JSON.
         $projectDir = (string) $this->getParameter('kernel.project_dir');
         $filesystem = new Filesystem();
         $filesystem->mkdir($projectDir . '/var/data');
@@ -507,6 +521,7 @@ final class AdminController extends AbstractController
 
     private function readEntries(string $filePath): array
     {
+        // Lecture tolerante: retourne un tableau vide si le JSON est absent/corrompu.
         if (!file_exists($filePath)) {
             return [];
         }
@@ -518,6 +533,7 @@ final class AdminController extends AbstractController
 
     private function writeEntries(string $filePath, array $entries): void
     {
+        // Ecriture atomique avec LOCK_EX pour eviter les ecrasements concurrents.
         $filesystem = new Filesystem();
         $filesystem->mkdir(dirname($filePath));
 

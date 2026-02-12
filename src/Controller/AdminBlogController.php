@@ -14,6 +14,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[Route('/admin/blog')]
 final class AdminBlogController extends AbstractController
 {
+    // Stockage mixte: contenu des articles en JSON, medias en fichiers uploades.
     private const STORAGE_RELATIVE_PATH = 'var/data/blog-posts.json';
     private const UPLOAD_RELATIVE_PATH = 'public/uploads/blog-media';
     private const UPLOAD_PUBLIC_PREFIX = '/uploads/blog-media/';
@@ -43,6 +44,7 @@ final class AdminBlogController extends AbstractController
     {
         $posts = $this->readPosts();
 
+        // Filtres optionnels pour retrouver rapidement un article en admin.
         $selectedCategory = trim((string) $request->query->get('category', ''));
         $selectedDate = trim((string) $request->query->get('date', ''));
 
@@ -140,6 +142,7 @@ final class AdminBlogController extends AbstractController
             return $this->redirectToRoute('app_admin_blog_index');
         }
 
+        // Suppression physique des medias pour eviter les fichiers orphelins.
         foreach ($deletedPost['media'] as $mediaItem) {
             $this->deleteMediaFile($mediaItem);
         }
@@ -155,6 +158,7 @@ final class AdminBlogController extends AbstractController
         $errors = [];
 
         if ($request->isMethod('POST')) {
+            // Token distinct creation/edition pour isoler les intentions de formulaire.
             $tokenId = 'admin_blog_save_' . ($isNew ? 'new' : $post['id']);
             if (!$this->isCsrfTokenValid($tokenId, (string) $request->request->get('_token'))) {
                 $errors[] = 'Jeton CSRF invalide.';
@@ -166,6 +170,7 @@ final class AdminBlogController extends AbstractController
             $remainingMedia = $post['media'];
             $removeIds = [];
             if (!$isNew) {
+                // Edition: on garde les medias non coches et on retire les coches.
                 $removeMedia = $request->request->all('remove_media');
                 if (is_array($removeMedia) && $removeMedia !== []) {
                     $removeIds = array_values(array_filter(array_map('strval', $removeMedia)));
@@ -244,6 +249,7 @@ final class AdminBlogController extends AbstractController
                 return $this->redirectToRoute('app_admin_blog_show', ['id' => $post['id']]);
             }
 
+            // En cas d'erreur formulaire, nettoyage des nouveaux fichiers deja uploades.
             foreach ($uploadedMediaResult['media'] as $uploadedMediaItem) {
                 $this->deleteMediaFile($uploadedMediaItem);
             }
@@ -266,6 +272,7 @@ final class AdminBlogController extends AbstractController
 
     private function extractFormInput(Request $request): array
     {
+        // Regroupe donnees standardisees (titre/date/categories/blocs texte).
         $title = trim((string) $request->request->get('title', ''));
         $publishDate = trim((string) $request->request->get('publish_date', date('Y-m-d')));
 
@@ -343,6 +350,7 @@ final class AdminBlogController extends AbstractController
             }
 
             $extension = strtolower((string) $uploadedItem->getClientOriginalExtension());
+            // Filtrage strict par extension autorisee.
             if ($extension === '' || !array_key_exists($extension, self::ALLOWED_EXTENSIONS)) {
                 $errors[] = sprintf(
                     'Type de fichier non autorise: %s',
@@ -351,6 +359,7 @@ final class AdminBlogController extends AbstractController
                 continue;
             }
 
+            // Limite de taille pour proteger le serveur et garder des temps de chargement stables.
             if ($uploadedItem->getSize() > self::MAX_MEDIA_FILE_SIZE) {
                 $errors[] = sprintf(
                     'Fichier trop volumineux (max 50 Mo): %s',
@@ -385,6 +394,7 @@ final class AdminBlogController extends AbstractController
     private function deleteMediaFile(array $mediaItem): void
     {
         $path = (string) ($mediaItem['path'] ?? '');
+        // Garde-fou: on ne supprime que dans le dossier media du projet.
         if (!str_starts_with($path, self::UPLOAD_PUBLIC_PREFIX)) {
             return;
         }
@@ -416,6 +426,7 @@ final class AdminBlogController extends AbstractController
         $hasChanged = false;
         $normalized = [];
 
+        // Normalisation defensive pour rester compatible avec d'anciens formats JSON.
         foreach ($decoded as $item) {
             if (!is_array($item)) {
                 continue;
@@ -541,6 +552,7 @@ final class AdminBlogController extends AbstractController
     {
         $storagePath = $this->getStoragePath();
 
+        // JSON unique pour faciliter sauvegarde/restauration des contenus blog.
         $filesystem = new Filesystem();
         $filesystem->mkdir(dirname($storagePath));
 

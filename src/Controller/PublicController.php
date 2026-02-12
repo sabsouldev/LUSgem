@@ -8,6 +8,7 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class PublicController extends AbstractController
 {
+    // Pages publiques institutionnelles (sans authentification).
     #[Route('/', name: 'app_home')]
     public function home(): Response
     {
@@ -42,6 +43,7 @@ final class PublicController extends AbstractController
     #[Route('/blog-newsletter', name: 'app_blog')]
     public function blog(): Response
     {
+        // Les newsletters publiques sont lues depuis le stockage JSON.
         $projectDir = (string) $this->getParameter('kernel.project_dir');
         $dataDir = $projectDir . '/var/data';
 
@@ -58,6 +60,7 @@ final class PublicController extends AbstractController
 
     private function readEntries(string $filePath): array
     {
+        // Fallback vide si le fichier n'existe pas ou est invalide.
         if (!file_exists($filePath)) {
             return [];
         }

@@ -13,6 +13,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[Route('/adherent')]
 final class MemberController extends AbstractController
 {
+    // Boite de propositions interne (visible admin + auteur).
     private const MEMBER_PROPOSITIONS_STORAGE_RELATIVE_PATH = 'var/data/propositions.json';
 
     #[Route('/vie-gem', name: 'app_member_dashboard')]
@@ -43,6 +44,7 @@ final class MemberController extends AbstractController
     public function propositions(Request $request): Response
     {
         if ($request->isMethod('POST')) {
+            // Protection CSRF obligatoire sur les propositions adherents.
             if (!$this->isCsrfTokenValid('member_proposition', (string) $request->request->get('_token'))) {
                 $this->addFlash('error', 'Jeton CSRF invalide.');
 
@@ -60,6 +62,7 @@ final class MemberController extends AbstractController
             }
 
             $entries = $this->readEntries($this->getPropositionsStoragePath());
+            // Les propositions sont stockees en JSON pour un suivi interne leger.
             array_unshift($entries, [
                 'id' => $this->createId(),
                 'topic' => mb_substr($topic, 0, 160),
@@ -79,6 +82,7 @@ final class MemberController extends AbstractController
         $currentUserEmail = $this->getUser()?->getUserIdentifier() ?? '';
         $entries = $this->readEntries($this->getPropositionsStoragePath());
 
+        // Chaque adherent ne voit que ses propres propositions.
         $myEntries = array_values(array_filter($entries, static function (array $entry) use ($currentUserEmail): bool {
             return (string) ($entry['submitted_by'] ?? '') === $currentUserEmail;
         }));
@@ -87,6 +91,7 @@ final class MemberController extends AbstractController
             return strcmp((string) ($b['submitted_at'] ?? ''), (string) ($a['submitted_at'] ?? ''));
         });
 
+        // Limite d'affichage pour garder la page lisible.
         return $this->render('member/propositions.html.twig', [
             'my_propositions' => array_slice($myEntries, 0, 10),
         ]);
@@ -101,6 +106,7 @@ final class MemberController extends AbstractController
 
     private function readEntries(string $filePath): array
     {
+        // Retourne [] si fichier manquant ou JSON invalide.
         if (!file_exists($filePath)) {
             return [];
         }
@@ -112,6 +118,7 @@ final class MemberController extends AbstractController
 
     private function writeEntries(string $filePath, array $entries): void
     {
+        // LOCK_EX protege les ecritures si deux requetes arrivent en meme temps.
         $filesystem = new Filesystem();
         $filesystem->mkdir(dirname($filePath));
 
