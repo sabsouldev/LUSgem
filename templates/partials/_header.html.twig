@@ -16,9 +16,17 @@
         </nav>
 
         <nav aria-label="Acces adherents" class="member-nav">
-            <a href="{{ path('app_login') }}">Connexion adherent</a>
-            <a href="{{ path('app_member_dashboard') }}">Espace adherent</a>
-            <a href="{{ path('app_admin_dashboard') }}">Administration</a>
+            {% if app.user %}
+                {% if is_granted('ROLE_ADMIN') %}
+                    <a href="{{ path('app_admin_dashboard') }}">Administration</a>
+                {% elseif is_granted('ROLE_MEMBER') %}
+                    <a href="{{ path('app_member_dashboard') }}">Espace adherent</a>
+                {% endif %}
+                <a href="{{ path('app_logout') }}">Deconnexion</a>
+            {% else %}
+                <a href="{{ path('app_login') }}">Connexion adherent</a>
+                <a href="{{ path('app_admin_dashboard') }}">Administration</a>
+            {% endif %}
         </nav>
     </div>
 </header>

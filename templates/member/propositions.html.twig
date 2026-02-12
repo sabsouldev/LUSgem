@@ -1,4 +1,4 @@
-﻿{% extends 'base.html.twig' %}
+{% extends 'base.html.twig' %}
 
 {% block title %}Propositions | Les Univers Singuliers{% endblock %}
 
@@ -6,9 +6,15 @@
 <div class="container">
     <section class="content-panel">
         <h1>Propositions</h1>
-        <p>Transmettez une idée d'activité, d'organisation ou un message confidentiel au bureau.</p>
+        <p>Transmettez une idee d'activite, d'organisation ou un message confidentiel au bureau.</p>
 
-        <form method="post" action="#" class="contact-form">
+        {% for type, messages in app.flashes %}
+            {% for message in messages %}
+                <p class="flash flash-{{ type }}">{{ message }}</p>
+            {% endfor %}
+        {% endfor %}
+
+        <form method="post" action="{{ path('app_member_propositions') }}" class="contact-form">
             <input type="hidden" name="_token" value="{{ csrf_token('member_proposition') }}">
 
             <label for="topic">Sujet</label>
@@ -24,6 +30,29 @@
 
             <button type="submit" class="btn-primary">Envoyer la proposition</button>
         </form>
+    </section>
+
+    <section class="content-panel">
+        <h2>Mes dernieres propositions</h2>
+        {% if my_propositions is empty %}
+            <p>Aucune proposition envoyee pour le moment.</p>
+        {% else %}
+            <ul>
+                {% for proposition in my_propositions %}
+                    <li>
+                        <strong>{{ proposition.topic|default('Sans sujet') }}</strong>
+                        -
+                        {{ proposition.status|default('Nouveau') }}
+                        {% if proposition.submitted_at is defined and proposition.submitted_at is not empty %}
+                            ({{ proposition.submitted_at|date('Y-m-d H:i') }})
+                        {% endif %}
+                        {% if proposition.confidential|default(false) %}
+                            - Confidentiel
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
     </section>
 </div>
 {% endblock %}
