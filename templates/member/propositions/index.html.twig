@@ -1,0 +1,72 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes propositions | Les Univers Singuliers{% endblock %}
+
+{% block body %}
+<div class="container">
+    <section class="content-panel">
+        <h1>Propositions</h1>
+        <p>Transmettez une idée d'activité, d'organisation ou tout message au bureau.</p>
+
+        {% for type, flashes in app.flashes %}
+            {% for flash in flashes %}
+                <p class="flash flash-{{ type }}">{{ flash }}</p>
+            {% endfor %}
+        {% endfor %}
+
+        <form method="post" action="{{ path('app_member_propositions') }}" class="contact-form">
+            <input type="hidden" name="_token" value="{{ csrf_token('member_proposition') }}">
+
+            <label for="titre">Titre</label>
+            <input id="titre" name="titre" type="text" maxlength="200" required>
+
+            <label for="contenu">Votre proposition</label>
+            <textarea id="contenu" name="contenu" rows="6" required></textarea>
+
+            <button type="submit" class="btn-primary">Envoyer la proposition</button>
+        </form>
+    </section>
+
+    <section class="content-panel">
+        <h2>Mes propositions</h2>
+        {% if propositions is empty %}
+            <p>Aucune proposition envoyée pour le moment.</p>
+        {% else %}
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Titre</th>
+                        <th>Statut lecture</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for proposition in propositions %}
+                        <tr>
+                            <td>{{ proposition.dateCreation|date('d/m/Y H:i') }}</td>
+                            <td>{{ proposition.titre }}</td>
+                            <td>
+                                {% if proposition.estLuParAdmin %}
+                                    <span class="badge badge-success">Lu par l'admin</span>
+                                {% else %}
+                                    <span class="badge badge-pending">Non lu</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <form method="post"
+                                      action="{{ path('app_member_propositions_delete', {id: proposition.id}) }}"
+                                      onsubmit="return confirm('Supprimer cette proposition définitivement ?')">
+                                    <input type="hidden" name="_token"
+                                           value="{{ csrf_token('member_proposition_delete_' ~ proposition.id) }}">
+                                    <button type="submit" class="btn-danger btn-sm">Supprimer</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    </section>
+</div>
+{% endblock %}

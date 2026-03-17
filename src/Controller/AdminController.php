@@ -19,8 +19,6 @@ final class AdminController extends AbstractController
 {
     // Donnees complementaires adherents hors schema SQL.
     private const MEMBER_PROFILE_STORAGE_RELATIVE_PATH = 'var/data/member-profiles.json';
-    private const MEMBER_PROPOSITIONS_STORAGE_RELATIVE_PATH = 'var/data/propositions.json';
-
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly UserPasswordHasherInterface $passwordHasher
@@ -46,7 +44,6 @@ final class AdminController extends AbstractController
                 'create_account' => $this->handleCreateAccount($request),
                 'reset_password' => $this->handleResetPassword($request),
                 'save_profile' => $this->handleSaveProfile($request),
-                'update_proposition_status' => $this->handleUpdatePropositionStatus($request),
                 default => $this->addFlash('warning', 'Action adherent inconnue.'),
             };
 
@@ -56,16 +53,10 @@ final class AdminController extends AbstractController
         /** @var list<User> $users */
         $users = $this->entityManager->getRepository(User::class)->findBy([], ['email' => 'ASC']);
         $profiles = $this->readEntries($this->getMemberProfilesStoragePath());
-        $propositions = $this->readEntries($this->getPropositionsStoragePath());
-
-        usort($propositions, static function (array $a, array $b): int {
-            return strcmp((string) ($b['submitted_at'] ?? ''), (string) ($a['submitted_at'] ?? ''));
-        });
 
         return $this->render('admin/adherents.html.twig', [
             'users' => $users,
             'profiles' => is_array($profiles) ? $profiles : [],
-            'propositions' => $propositions,
         ]);
     }
 
@@ -146,7 +137,37 @@ final class AdminController extends AbstractController
 
         return $response;
     }
+    #[Route('/adherents/{id}', name: 'app_admin_adherent_edit', methods: ['GET', 'POST'])]
+public function adherentEdit(int $id, Request $request): Response
+{
+    $this->ensureDataDirectories();
 
+    $user = $this->entityManager->getRepository(User::class)->find($id);
+    if (!$user instanceof User) {
+        $this->addFlash('error', 'Adherent introuvable.');
+        return $this->redirectToRoute('app_admin_adherents');
+    }
+
+    if ($request->isMethod('POST')) {
+        $action = (string) $request->request->get('adherent_action');
+
+        match ($action) {
+            'save_profile' => $this->handleSaveProfile($request),
+            'reset_password' => $this->handleResetPassword($request),
+            default => $this->addFlash('warning', 'Action inconnue.'),
+        };
+
+        return $this->redirectToRoute('app_admin_adherent_edit', ['id' => $id]);
+    }
+
+    $profiles = $this->readEntries($this->getMemberProfilesStoragePath());
+    $profile = $profiles[(string) $id] ?? [];
+
+    return $this->render('admin/adherent_edit.html.twig', [
+        'user' => $user,
+        'profile' => $profile,
+    ]);
+}
     #[Route('/publications', name: 'app_admin_publications', methods: ['GET', 'POST'])]
     public function publications(Request $request): Response
     {
@@ -164,11 +185,11 @@ final class AdminController extends AbstractController
         ]);
 
         // Compatibilite: copie des anciens fichiers "moock" vers le dossier "mook".
-        $this->migrateLegacyMookFiles($uploadsDir);
+    
 
         if ($request->isMethod('POST')) {
             $action = (string) $request->request->get('publication_action');
-
+            
             match ($action) {
                 'planning_upload' => $this->handlePlanningUpload($request, $uploadsDir . '/planning'),
                 'report_upload' => $this->handleReportUpload($request, $uploadsDir . '/comptes-rendus'),
@@ -196,9 +217,37 @@ final class AdminController extends AbstractController
     #[Route('/messages', name: 'app_admin_messages')]
     public function messages(): Response
     {
-        return $this->render('admin/messages.html.twig');
+        $projectDir = (string) $this->getParameter('kernel.project_dir');
+        $messages = $this->readEntries($projectDir . '/var/data/contact-messages.json');
+
+        return $this->render('admin/messages.html.twig', [
+            'messages' => $messages,
+        ]);
     }
 
+     #[Route('/messages/{index}', name: 'app_admin_message_show', methods: ['GET'])]
+    public function messageShow(int $index): Response
+    {
+        $projectDir = (string) $this->getParameter('kernel.project_dir');
+        $storageFile = $projectDir . '/var/data/contact-messages.json';
+        $messages = $this->readEntries($storageFile);
+
+        if (!isset($messages[$index])) {
+            $this->addFlash('error', 'Message introuvable.');
+            return $this->redirectToRoute('app_admin_messages');
+        }
+
+        // Marquer comme lu
+        if (!($messages[$index]['is_read'] ?? false)) {
+            $messages[$index]['is_read'] = true;
+            $this->writeEntries($storageFile, $messages);
+        }
+
+        return $this->render('admin/message_show.html.twig', [
+            'msg' => $messages[$index],
+        ]);
+    }
+    
     private function handleCreateAccount(Request $request): void
     {
         // Creation admin-only: aucune inscription publique n'est exposee.
@@ -336,56 +385,6 @@ final class AdminController extends AbstractController
         $this->addFlash('success', 'Fiche adherent mise a jour: ' . $user->getEmail() . '.');
     }
 
-    private function handleUpdatePropositionStatus(Request $request): void
-    {
-        $propositionId = (string) $request->request->get('proposition_id', '');
-        $tokenId = 'admin_proposition_status_' . $propositionId;
-
-        if (!$this->isCsrfTokenValid($tokenId, (string) $request->request->get('_token'))) {
-            $this->addFlash('error', 'Jeton CSRF invalide pour la proposition.');
-
-            return;
-        }
-
-        $status = (string) $request->request->get('status', 'Nouveau');
-        // Statuts limites pour conserver un suivi admin coherent.
-        if (!in_array($status, ['Nouveau', 'En cours', 'Traitee'], true)) {
-            $status = 'Nouveau';
-        }
-
-        $propositions = $this->readEntries($this->getPropositionsStoragePath());
-        if (!is_array($propositions) || $propositions === []) {
-            $this->addFlash('warning', 'Aucune proposition trouvee.');
-
-            return;
-        }
-
-        $updated = false;
-        foreach ($propositions as $index => $proposition) {
-            if (!is_array($proposition)) {
-                continue;
-            }
-
-            if ((string) ($proposition['id'] ?? '') !== $propositionId) {
-                continue;
-            }
-
-            $propositions[$index]['status'] = $status;
-            $propositions[$index]['updated_at'] = date('c');
-            $updated = true;
-            break;
-        }
-
-        if (!$updated) {
-            $this->addFlash('warning', 'Proposition introuvable.');
-
-            return;
-        }
-
-        $this->writeEntries($this->getPropositionsStoragePath(), $propositions);
-        $this->addFlash('success', 'Statut de la proposition mis a jour.');
-    }
-
     private function handlePlanningUpload(Request $request, string $targetDir): void
     {
         // Upload remplace toujours le planning courant (nom de fichier fixe).
@@ -435,18 +434,14 @@ final class AdminController extends AbstractController
 
     private function handleMookUpload(Request $request, string $targetDir): void
     {
-        // Double token/champs conserves temporairement pour compatibilite ancienne orthographe.
         $csrfToken = (string) $request->request->get('_token');
-        if (
-            !$this->isCsrfTokenValid('admin_mook', $csrfToken)
-            && !$this->isCsrfTokenValid('admin_moock', $csrfToken)
-        ) {
+        if (!$this->isCsrfTokenValid('admin_mook', $csrfToken)) {
             $this->addFlash('error', 'Jeton CSRF invalide pour le mook.');
 
             return;
         }
 
-        $number = (string) ($request->request->get('mook_number') ?? $request->request->get('moock_number', '1'));
+           $number = (string) ($request->request->get('mook_number', '1'));
         if (!in_array($number, ['1', '2'], true)) {
             $this->addFlash('error', 'Numero de mook invalide.');
 
@@ -454,9 +449,6 @@ final class AdminController extends AbstractController
         }
 
         $file = $request->files->get('mook_pdf');
-        if (!$file instanceof UploadedFile) {
-            $file = $request->files->get('moock_pdf');
-        }
         if (!$file instanceof UploadedFile || strtolower((string) $file->getClientOriginalExtension()) !== 'pdf') {
             $this->addFlash('error', 'Veuillez fournir un fichier PDF valide pour le mook.');
 
@@ -465,7 +457,7 @@ final class AdminController extends AbstractController
 
         $file->move($targetDir, 'mook-' . $number . '.pdf');
         $this->addFlash('success', 'Mook ' . $number . ' mis a jour.');
-    }
+}
 
     private function handleNewsletterPublish(Request $request, string $storageFile): void
     {
@@ -512,13 +504,6 @@ final class AdminController extends AbstractController
         return $projectDir . '/' . self::MEMBER_PROFILE_STORAGE_RELATIVE_PATH;
     }
 
-    private function getPropositionsStoragePath(): string
-    {
-        $projectDir = (string) $this->getParameter('kernel.project_dir');
-
-        return $projectDir . '/' . self::MEMBER_PROPOSITIONS_STORAGE_RELATIVE_PATH;
-    }
-
     private function readEntries(string $filePath): array
     {
         // Lecture tolerante: retourne un tableau vide si le JSON est absent/corrompu.
@@ -562,24 +547,4 @@ final class AdminController extends AbstractController
         return preg_match('/^\d{4}-\d{2}-\d{2}$/', $value) ? $value : '';
     }
 
-    private function migrateLegacyMookFiles(string $uploadsDir): void
-    {
-        $legacyDir = $uploadsDir . '/moocks';
-        $targetDir = $uploadsDir . '/mooks';
-
-        if (!is_dir($legacyDir)) {
-            return;
-        }
-
-        $legacyFiles = glob($legacyDir . '/*.pdf') ?: [];
-        foreach ($legacyFiles as $legacyFilePath) {
-            $legacyFilename = basename($legacyFilePath);
-            $targetFilename = str_replace('moock-', 'mook-', $legacyFilename);
-            $targetPath = $targetDir . '/' . $targetFilename;
-
-            if (!file_exists($targetPath)) {
-                @copy($legacyFilePath, $targetPath);
-            }
-        }
-    }
 }

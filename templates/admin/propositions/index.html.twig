@@ -1,0 +1,62 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Propositions des adhérents | Les Univers Singuliers{% endblock %}
+
+{% block body %}
+<div class="container">
+    <section class="content-panel">
+        <h1>Propositions des adhérents</h1>
+
+        {% for type, flashes in app.flashes %}
+            {% for flash in flashes %}
+                <p class="flash flash-{{ type }}">{{ flash }}</p>
+            {% endfor %}
+        {% endfor %}
+
+        {% if propositions is empty %}
+            <p>Aucune proposition reçue pour le moment.</p>
+        {% else %}
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Adhérent</th>
+                        <th>Titre</th>
+                        <th>Statut</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for proposition in propositions %}
+                        <tr>
+                            <td>{{ proposition.dateCreation|date('d/m/Y H:i') }}</td>
+                            <td>{{ proposition.auteur.email }}</td>
+                            <td>
+                                <a href="{{ path('app_admin_propositions_show', {id: proposition.id}) }}">
+                                    {{ proposition.titre }}
+                                </a>
+                            </td>
+                            <td>
+                                {% if proposition.estLuParAdmin %}
+                                    <span class="badge badge-success">Lu</span>
+                                {% else %}
+                                    <span class="badge badge-pending">Non lu</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <form method="post"
+                                      action="{{ path('app_admin_propositions_delete', {id: proposition.id}) }}"
+                                      onsubmit="return confirm('Supprimer cette proposition ?')">
+                                    <input type="hidden" name="_token"
+                                           value="{{ csrf_token('admin_proposition_delete_' ~ proposition.id) }}">
+                                    <button type="submit" class="btn-danger btn-sm">Supprimer</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    </section>
+</div>
+{% endblock %}

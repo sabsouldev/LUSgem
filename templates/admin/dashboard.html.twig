@@ -1,4 +1,4 @@
-﻿{% extends 'base.html.twig' %}
+{% extends 'base.html.twig' %}
 
 {% block title %}Administration | Les Univers Singuliers{% endblock %}
 
@@ -8,10 +8,11 @@
         <h1>Administration</h1>
         <p>Tableau de bord des fonctions réservées à l'administrateur.</p>
         <ul>
-            <li><a href="{{ path('app_admin_adherents') }}">Creer comptes adherents, gerer fiches/propositions et exporter le tableau</a></li>
-            <li><a href="{{ path('app_admin_publications') }}">Publier planning, comptes rendus, mooks et newsletter</a></li>
-            <li><a href="{{ path('app_admin_blog_index') }}">Gerer le CRUD du blog adherents (texte + medias)</a></li>
-            <li><a href="{{ path('app_admin_messages') }}">Consulter les messages du formulaire contact</a></li>
+            <li><a href="{{ path('app_admin_adherents') }}">Créer des comptes adhérents, gérer les fiches et exporter le tableau</a></li>
+            <li><a href="{{ path('app_admin_propositions') }}">Consulter les propositions des adhérents</a></li>
+            <li><a href="{{ path('app_admin_publications') }}">Publier le planning, les comptes rendus, les mooks et la newsletter</a></li>
+            <li><a href="{{ path('app_admin_blog_index') }}">Gérer le blog adhérents (texte + médias)</a></li>
+            <li><a href="{{ path('app_admin_messages') }}">Consulter les messages du formulaire de contact</a></li>
         </ul>
     </section>
 </div>

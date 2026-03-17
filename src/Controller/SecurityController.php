@@ -24,6 +24,6 @@ final class SecurityController extends AbstractController
     public function logout(): void
     {
         // Route "technique": Symfony intercepte la deconnexion via le firewall.
-        throw new \LogicException('Cette methode est interceptee par le firewall Symfony.');
+        throw new \LogicException('Cette méthode est interceptée par le firewall Symfony.');
     }
 }

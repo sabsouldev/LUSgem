@@ -50,132 +50,46 @@
         {% if users is empty %}
             <p>Aucun adherent en base de donnees.</p>
         {% else %}
-            <div class="admin-member-list">
-                {% for user in users %}
-                    {% set profile = profiles[user.id|default(0)] ?? {} %}
-                    <article class="admin-member-card">
-                        <h3>{{ user.email }}</h3>
-                        <p class="blog-meta">ID: {{ user.id }} - Role actuel: {% if 'ROLE_ADMIN' in user.roles %}Administrateur{% else %}Adherent{% endif %}</p>
-
-                        <form method="post" class="contact-form">
-                            <input type="hidden" name="adherent_action" value="save_profile">
-                            <input type="hidden" name="user_id" value="{{ user.id }}">
-                            <input type="hidden" name="_token" value="{{ csrf_token('admin_member_profile_' ~ user.id) }}">
-
-                            <div class="grid-two">
-                                <div>
-                                    <label for="first_name_{{ user.id }}">Prenom</label>
-                                    <input id="first_name_{{ user.id }}" name="first_name" type="text" value="{{ profile.first_name|default('') }}">
-                                </div>
-                                <div>
-                                    <label for="last_name_{{ user.id }}">Nom</label>
-                                    <input id="last_name_{{ user.id }}" name="last_name" type="text" value="{{ profile.last_name|default('') }}">
-                                </div>
-                                <div>
-                                    <label for="phone_{{ user.id }}">Telephone</label>
-                                    <input id="phone_{{ user.id }}" name="phone" type="text" value="{{ profile.phone|default('') }}">
-                                </div>
-                                <div>
-                                    <label for="city_{{ user.id }}">Ville</label>
-                                    <input id="city_{{ user.id }}" name="city" type="text" value="{{ profile.city|default('') }}">
-                                </div>
-                                <div>
-                                    <label for="postal_code_{{ user.id }}">Code postal</label>
-                                    <input id="postal_code_{{ user.id }}" name="postal_code" type="text" value="{{ profile.postal_code|default('') }}">
-                                </div>
-                                <div>
-                                    <label for="role_level_{{ user.id }}">Type de compte</label>
-                                    <select id="role_level_{{ user.id }}" name="role_level">
-                                        <option value="member" {% if 'ROLE_ADMIN' not in user.roles %}selected{% endif %}>Adherent</option>
-                                        <option value="admin" {% if 'ROLE_ADMIN' in user.roles %}selected{% endif %}>Administrateur</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <label for="address_{{ user.id }}">Adresse</label>
-                            <textarea id="address_{{ user.id }}" name="address" rows="2">{{ profile.address|default('') }}</textarea>
-
-                            <div class="grid-two">
-                                <div>
-                                    <label for="cotisation_status_{{ user.id }}">Cotisation</label>
-                                    <input id="cotisation_status_{{ user.id }}" name="cotisation_status" type="text" value="{{ profile.cotisation_status|default('') }}" placeholder="Ex: A jour, En attente">
-                                </div>
-                                <div>
-                                    <label for="cotisation_date_{{ user.id }}">Date cotisation</label>
-                                    <input id="cotisation_date_{{ user.id }}" name="cotisation_date" type="date" value="{{ profile.cotisation_date|default('') }}">
-                                </div>
-                                <div>
-                                    <label for="attestation_status_{{ user.id }}">Attestation</label>
-                                    <input id="attestation_status_{{ user.id }}" name="attestation_status" type="text" value="{{ profile.attestation_status|default('') }}" placeholder="Ex: Recue, A relancer">
-                                </div>
-                                <div>
-                                    <label for="attestation_date_{{ user.id }}">Date attestation</label>
-                                    <input id="attestation_date_{{ user.id }}" name="attestation_date" type="date" value="{{ profile.attestation_date|default('') }}">
-                                </div>
-                            </div>
-
-                            <label for="extra_fields_{{ user.id }}">Champs personnalises (libre)</label>
-                            <textarea id="extra_fields_{{ user.id }}" name="extra_fields" rows="2" placeholder="Ex: regime, contact urgence, suivi particulier">{{ profile.extra_fields|default('') }}</textarea>
-
-                            <label for="notes_{{ user.id }}">Notes admin</label>
-                            <textarea id="notes_{{ user.id }}" name="notes" rows="3">{{ profile.notes|default('') }}</textarea>
-
-                            <div class="button-row">
-                                <button type="submit" class="btn-primary">Enregistrer la fiche</button>
-                            </div>
-                        </form>
-
-                        <form method="post" class="contact-form" style="margin-top: 1rem;">
-                            <input type="hidden" name="adherent_action" value="reset_password">
-                            <input type="hidden" name="_token" value="{{ csrf_token('admin_member_reset_password') }}">
-                            <input type="hidden" name="user_id" value="{{ user.id }}">
-
-                            <label for="new_password_{{ user.id }}">Reinitialiser mot de passe</label>
-                            <div class="button-row">
-                                <input id="new_password_{{ user.id }}" name="new_password" type="text" minlength="8" placeholder="Nouveau mot de passe" required>
-                                <button type="submit" class="btn-secondary">Mettre a jour mot de passe</button>
-                            </div>
-                        </form>
-                    </article>
-                {% endfor %}
+            <div style="overflow-x: auto;">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Email</th>
+                            <th>Prenom</th>
+                            <th>Nom</th>
+                            <th>Telephone</th>
+                            <th>Ville</th>
+                            <th>Cotisation</th>
+                            <th>Role</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                            {% set profile = profiles[user.id|default(0)] ?? {} %}
+                            <tr>
+                                <td>{{ user.id }}</td>
+                                <td>{{ user.email }}</td>
+                                <td>{{ profile.first_name|default('-') }}</td>
+                                <td>{{ profile.last_name|default('-') }}</td>
+                                <td>{{ profile.phone|default('-') }}</td>
+                                <td>{{ profile.city|default('-') }}</td>
+                                <td>{{ profile.cotisation_status|default('-') }}</td>
+                                <td>{% if 'ROLE_ADMIN' in user.roles %}Admin{% else %}Adherent{% endif %}</td>
+                                <td>
+                                    <a href="{{ path('app_admin_adherent_edit', {id: user.id}) }}" class="btn-primary btn-small">Modifier</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
         {% endif %}
     </section>
 
     <section class="content-panel">
-        <h2>Propositions des adherents</h2>
-        {% if propositions is empty %}
-            <p>Aucune proposition pour le moment.</p>
-        {% else %}
-            <div class="admin-proposition-list">
-                {% for proposition in propositions %}
-                    <article class="admin-proposition-card">
-                        <h3>{{ proposition.topic|default('Sans sujet') }}</h3>
-                        <p class="blog-meta">
-                            Par: {{ proposition.submitted_by|default('inconnu') }}
-                            {% if proposition.submitted_at is defined and proposition.submitted_at is not empty %}
-                                - Date: {{ proposition.submitted_at|date('Y-m-d H:i') }}
-                            {% endif %}
-                            {% if proposition.confidential|default(false) %}- Confidentiel{% endif %}
-                        </p>
-                        <p>{{ proposition.proposal|default('')|nl2br }}</p>
-
-                        <form method="post" class="button-row">
-                            <input type="hidden" name="adherent_action" value="update_proposition_status">
-                            <input type="hidden" name="proposition_id" value="{{ proposition.id|default('') }}">
-                            <input type="hidden" name="_token" value="{{ csrf_token('admin_proposition_status_' ~ proposition.id|default('')) }}">
-
-                            <select name="status">
-                                <option value="Nouveau" {% if proposition.status|default('Nouveau') == 'Nouveau' %}selected{% endif %}>Nouveau</option>
-                                <option value="En cours" {% if proposition.status|default('Nouveau') == 'En cours' %}selected{% endif %}>En cours</option>
-                                <option value="Traitee" {% if proposition.status|default('Nouveau') == 'Traitee' %}selected{% endif %}>Traitee</option>
-                            </select>
-                            <button type="submit" class="btn-primary">Mettre a jour statut</button>
-                        </form>
-                    </article>
-                {% endfor %}
-            </div>
-        {% endif %}
+        <a href="{{ path('app_admin_propositions') }}" class="btn-secondary">Voir toutes les propositions</a>
     </section>
 </div>
 {% endblock %}

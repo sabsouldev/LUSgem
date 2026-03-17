@@ -1,12 +1,12 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Gestion blog | Administration{% endblock %}
+{% block title %}Gestion du blog | Administration{% endblock %}
 
 {% block body %}
 <div class="container">
     <section class="content-panel">
-        <h1>Gestion du blog adherents</h1>
-        <p>CRUD reserve a l'administration. Les articles sont visibles dans l'espace adherent uniquement.</p>
+        <h1>Gestion du blog adhérents</h1>
+        <p>CRUD réservé à l'administration. Les articles sont visibles dans l'espace adhérent uniquement.</p>
 
         {% for type, messages in app.flashes %}
             {% for message in messages %}
@@ -18,7 +18,7 @@
     <section class="content-panel">
         <form method="get" class="grid-two">
             <div>
-                <label for="category">Categorie</label>
+                <label for="category">Catégorie</label>
                 <select id="category" name="category">
                     <option value="">Toutes</option>
                     {% for category in available_categories %}
@@ -35,7 +35,7 @@
             <div class="button-row">
                 <button type="submit" class="btn-primary">Rechercher</button>
                 {% if has_filters %}
-                    <a class="btn-secondary" href="{{ path('app_admin_blog_index') }}">Reinitialiser</a>
+                    <a class="btn-secondary" href="{{ path('app_admin_blog_index') }}">Réinitialiser</a>
                 {% endif %}
                 <a class="btn-primary" href="{{ path('app_admin_blog_new') }}">Nouvel article</a>
             </div>
@@ -45,13 +45,13 @@
     <section class="member-post-grid">
         {% if posts is empty %}
             <article class="content-panel">
-                <p>Aucun article ne correspond a la recherche.</p>
+                <p>Aucun article ne correspond à la recherche.</p>
             </article>
         {% else %}
             {% for post in posts %}
                 <article class="content-panel blog-post-card">
                     <h2>{{ post.title }}</h2>
-                    <p class="blog-meta">Date: {{ post.publish_date }}</p>
+                    <p class="blog-meta">Date : {{ post.publish_date }}</p>
 
                     <div class="tag-row">
                         {% for category in post.categories %}
@@ -62,7 +62,7 @@
                     <p>{{ post.excerpt }}</p>
 
                     {% if post.media is defined and post.media|length > 0 %}
-                        <p class="blog-meta">{{ post.media|length }} fichier(s) associe(s)</p>
+                        <p class="blog-meta">{{ post.media|length }} fichier(s) associé(s)</p>
                     {% endif %}
 
                     <div class="button-row">

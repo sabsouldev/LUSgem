@@ -6,26 +6,50 @@
 <div class="container">
     <section class="content-panel">
         <h1>Messages de contact</h1>
-        <p>Historique des messages reçus depuis le formulaire public.</p>
+        <p>Historique des messages recus depuis le formulaire public.</p>
 
-        <table class="data-table">
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Expéditeur</th>
-                    <th>Objet</th>
-                    <th>Statut</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>12/02/2026</td>
-                    <td>exemple@email.fr</td>
-                    <td>Demande d'information</td>
-                    <td>Nouveau</td>
-                </tr>
-            </tbody>
-        </table>
+        {% for type, flashes in app.flashes %}
+            {% for flash in flashes %}
+                <p class="flash flash-{{ type }}">{{ flash }}</p>
+            {% endfor %}
+        {% endfor %}
+
+        {% if messages is empty %}
+            <p>Aucun message recu pour le moment.</p>
+        {% else %}
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Nom</th>
+                        <th>Email</th>
+                        <th>Objet</th>
+                        <th>Statut</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for key, msg in messages %}
+                        <tr>
+                            <td>{{ msg.sent_at|date('d/m/Y H:i') }}</td>
+                            <td>{{ msg.name }}</td>
+                            <td><a href="mailto:{{ msg.email }}">{{ msg.email }}</a></td>
+                            <td>{{ msg.subject }}</td>
+                            <td>
+                                {% if msg.is_read %}
+                                    <span class="badge badge-success">Lu</span>
+                                {% else %}
+                                    <span class="badge badge-pending">Non lu</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{{ path('app_admin_message_show', {index: key}) }}" class="btn-primary btn-small">Voir</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
     </section>
 </div>
 {% endblock %}

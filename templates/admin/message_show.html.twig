@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Message de {{ msg.name }} | Les Univers Singuliers{% endblock %}
+
+{% block body %}
+<div class="container">
+    <section class="content-panel">
+        <a href="{{ path('app_admin_messages') }}" class="btn-secondary btn-small">&larr; Retour aux messages</a>
+
+        <h1>{{ msg.subject }}</h1>
+
+        <dl>
+            <dt>De</dt>
+            <dd>{{ msg.name }} — <a href="mailto:{{ msg.email }}">{{ msg.email }}</a></dd>
+
+            <dt>Date</dt>
+            <dd>{{ msg.sent_at|date('d/m/Y a H:i') }}</dd>
+
+            <dt>Statut</dt>
+            <dd>
+                {% if msg.is_read %}
+                    <span class="badge badge-success">Lu</span>
+                {% else %}
+                    <span class="badge badge-pending">Non lu</span>
+                {% endif %}
+            </dd>
+        </dl>
+
+        <div class="proposition-content" style="margin-top: 1rem; padding: 1rem; background: #F8FBFF; border-radius: 12px; border: 2px solid #D6E5FF;">
+            {{ msg.message|nl2br }}
+        </div>
+    </section>
+</div>
+{% endblock %}

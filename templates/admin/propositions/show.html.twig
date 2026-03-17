@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Proposition de {{ proposition.auteur.email }} | Les Univers Singuliers{% endblock %}
+
+{% block body %}
+<div class="container">
+    <section class="content-panel">
+        <a href="{{ path('app_admin_propositions') }}" class="btn-secondary">&larr; Retour à la liste</a>
+
+        <h1>{{ proposition.titre }}</h1>
+
+        <dl class="definition-list">
+            <dt>Adhérent</dt>
+            <dd>{{ proposition.auteur.email }}</dd>
+
+            <dt>Date</dt>
+            <dd>{{ proposition.dateCreation|date('d/m/Y à H:i') }}</dd>
+
+            <dt>Statut</dt>
+            <dd>
+                {% if proposition.estLuParAdmin %}
+                    <span class="badge badge-success">Lu</span>
+                {% else %}
+                    <span class="badge badge-pending">Non lu</span>
+                {% endif %}
+            </dd>
+        </dl>
+
+        <div class="proposition-content">
+            {{ proposition.contenu|nl2br }}
+        </div>
+
+        <form method="post"
+              action="{{ path('app_admin_propositions_delete', {id: proposition.id}) }}"
+              onsubmit="return confirm('Supprimer cette proposition définitivement ?')"
+              style="margin-top: 1.5rem;">
+            <input type="hidden" name="_token"
+                   value="{{ csrf_token('admin_proposition_delete_' ~ proposition.id) }}">
+            <button type="submit" class="btn-danger">Supprimer cette proposition</button>
+        </form>
+    </section>
+</div>
+{% endblock %}
