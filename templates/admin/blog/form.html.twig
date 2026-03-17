@@ -63,7 +63,37 @@
                     </div>
                 </fieldset>
             {% endif %}
-
+            <fieldset class="media-fieldset">
+                <legend>Liens externes (YouTube, podcasts, etc.)</legend>
+                <div id="external-links" class="blog-content-blocks">
+                    {% if post.external_links is defined and post.external_links is not empty %}
+                        {% for link in post.external_links %}
+                            <div class="grid-two">
+                                <div>
+                                    <label>Titre</label>
+                                    <input type="text" name="external_link_titles[]" value="{{ link.title }}" placeholder="Ex: Episode 12 - Mon parcours">
+                                </div>
+                                <div>
+                                    <label>URL</label>
+                                    <input type="url" name="external_link_urls[]" value="{{ link.url }}" placeholder="https://www.youtube.com/watch?v=...">
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="grid-two">
+                            <div>
+                                <label>Titre</label>
+                                <input type="text" name="external_link_titles[]" placeholder="Ex: Episode 12 - Mon parcours">
+                            </div>
+                            <div>
+                                <label>URL</label>
+                                <input type="url" name="external_link_urls[]" placeholder="https://www.youtube.com/watch?v=...">
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+                <button type="button" id="add-external-link" class="btn-secondary">Ajouter un lien</button>
+            </fieldset>
             <label for="media_files">Ajouter des fichiers medias</label>
             <input id="media_files" name="media_files[]" type="file" multiple accept=".pdf,.jpg,.jpeg,.png,.webp,.gif,.svg,.mp4,.webm,.mov,.ogv,.mp3,.wav,.ogg,.m4a,.aac">
 
@@ -104,6 +134,29 @@
 
         blocks.appendChild(label);
         blocks.appendChild(textarea);
+    });
+})();
+</script>
+<script>
+(function () {
+    var button = document.getElementById('add-external-link');
+    var container = document.getElementById('external-links');
+
+    if (!button || !container) return;
+
+    var count = container.querySelectorAll('input[name="external_link_urls[]"]').length;
+
+    button.addEventListener('click', function () {
+        if (count >= 10) return;
+        count++;
+
+        var wrapper = document.createElement('div');
+        wrapper.className = 'grid-two';
+        wrapper.innerHTML =
+            '<div><label>Titre</label><input type="text" name="external_link_titles[]" placeholder="Ex: Episode 12"></div>' +
+            '<div><label>URL</label><input type="url" name="external_link_urls[]" placeholder="https://..."></div>';
+
+        container.appendChild(wrapper);
     });
 })();
 </script>

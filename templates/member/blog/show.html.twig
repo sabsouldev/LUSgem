@@ -5,8 +5,10 @@
 {% block body %}
 <div class="container">
     <article class="content-panel blog-post-card">
+        <a href="{{ path('app_member_blog_index') }}" class="btn-secondary btn-small">&larr; Retour au blog</a>
+
         <h1>{{ post.title }}</h1>
-        <p class="blog-meta">Date: {{ post.publish_date }}</p>
+        <p class="blog-meta">Publie le {{ post.publish_date|date('d/m/Y') }}</p>
 
         <div class="tag-row">
             {% for category in post.categories %}
@@ -15,43 +17,79 @@
         </div>
 
         {% for block in post.contents %}
-            <p>{{ block|nl2br }}</p>
+            <div class="blog-text-block">{{ block|nl2br }}</div>
         {% endfor %}
 
         {% if post.media is defined and post.media|length > 0 %}
-            <section class="blog-media-grid">
-                <h2>Fichiers associes</h2>
-                {% for media in post.media %}
-                    <article class="blog-media-item">
-                        <h3>{{ media.name }}</h3>
-                        <p class="blog-meta">Type: {{ media.type|upper }}</p>
-
-                        {% if media.type == 'image' %}
-                            <img src="{{ media.path }}" alt="{{ media.name }}" loading="lazy">
-                        {% elseif media.type == 'video' %}
-                            <video controls preload="metadata">
-                                <source src="{{ media.path }}" type="{{ media.mime_type|default('video/mp4') }}">
-                                Votre navigateur ne prend pas en charge la video.
-                            </video>
-                        {% elseif media.type == 'audio' %}
-                            <audio controls preload="none">
-                                <source src="{{ media.path }}" type="{{ media.mime_type|default('audio/mpeg') }}">
-                                Votre navigateur ne prend pas en charge l'audio.
-                            </audio>
+            {% for media in post.media %}
+                {% if media.type == 'image' %}
+                    <figure class="blog-figure">
+                        <img src="{{ media.path }}" alt="{{ media.name }}" loading="lazy">
+                        {% if media.name != '' %}
+                            <figcaption>{{ media.name }}</figcaption>
                         {% endif %}
+                    </figure>
 
-                        <div class="button-row">
-                            <a class="btn-secondary" href="{{ media.path }}" target="_blank" rel="noopener">Consulter</a>
-                            <a class="btn-primary" href="{{ media.path }}" download>Telecharger</a>
-                        </div>
-                    </article>
+                {% elseif media.type == 'video' %}
+                    <div class="blog-media-block">
+                        <video controls preload="metadata">
+                            <source src="{{ media.path }}" type="{{ media.mime_type|default('video/mp4') }}">
+                            Votre navigateur ne prend pas en charge la video.
+                        </video>
+                    </div>
+
+                {% elseif media.type == 'audio' %}
+                    <div class="blog-media-block">
+                        <p class="blog-meta">{{ media.name }}</p>
+                        <audio controls preload="none">
+                            <source src="{{ media.path }}" type="{{ media.mime_type|default('audio/mpeg') }}">
+                            Votre navigateur ne prend pas en charge l'audio.
+                        </audio>
+                    </div>
+
+                {% elseif media.type == 'pdf' %}
+                    <div class="blog-media-block">
+                        <a class="btn-secondary" href="{{ media.path }}" target="_blank" rel="noopener">{{ media.name }} (PDF)</a>
+                        <a class="btn-primary btn-small" href="{{ media.path }}" download>Telecharger</a>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+         {% if post.external_links is defined and post.external_links is not empty %}
+            <section style="margin-top: 1.5rem;">
+                <h2>Videos et podcasts</h2>
+                {% for link in post.external_links %}
+                    <div class="blog-media-block">
+                       {% if link.embed_type == 'youtube' %}
+                            <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 12px;">
+                                <iframe
+                                    src="{{ link.embed_url }}"
+                                    style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;"
+                                    allowfullscreen
+                                    loading="lazy"
+                                    title="{{ link.title }}">
+                                </iframe>
+                            </div>
+                            <p class="blog-meta" style="margin-top: 0.5rem;">{{ link.title }}</p>
+
+                        {% elseif link.embed_type == 'spotify' %}
+                            <iframe
+                                src="{{ link.embed_url }}"
+                                width="100%" height="232" frameborder="0"
+                                allow="encrypted-media" loading="lazy"
+                                style="border-radius: 12px;">
+                            </iframe>
+                            <p class="blog-meta">{{ link.title }}</p>
+
+                        {% else %}
+                            <a href="{{ link.url }}" target="_blank" rel="noopener" class="btn-secondary">
+                                {{ link.title }}
+                            </a>
+                        {% endif %}
+                    </div>
                 {% endfor %}
             </section>
         {% endif %}
-
-        <div class="button-row">
-            <a class="btn-secondary" href="{{ path('app_member_blog_index') }}">Retour liste</a>
-        </div>
     </article>
 </div>
 {% endblock %}

@@ -207,6 +207,7 @@ final class AdminBlogController extends AbstractController
                         'contents' => $input['contents'],
                         'media' => $media,
                         'excerpt' => $this->makeExcerpt($input['contents'][0] ?? 'Contenu multimedia'),
+                        'external_links' => $input['external_links'],
                         'published_at' => date('c'),
                         'updated_at' => date('c'),
                     ];
@@ -230,6 +231,7 @@ final class AdminBlogController extends AbstractController
                     $posts[$index]['contents'] = $input['contents'];
                     $posts[$index]['media'] = $media;
                     $posts[$index]['excerpt'] = $this->makeExcerpt($input['contents'][0] ?? 'Contenu multimedia');
+                    $posts[$index]['external_links'] = $input['external_links'];
                     $posts[$index]['updated_at'] = date('c');
                     break;
                 }
@@ -303,7 +305,32 @@ final class AdminBlogController extends AbstractController
                 $contents[] = $value;
             }
         }
+          $linkTitles = $request->request->all('external_link_titles');
+        $linkUrls = $request->request->all('external_link_urls');
+        if (!is_array($linkTitles)) $linkTitles = [];
+        if (!is_array($linkUrls)) $linkUrls = [];
 
+        $externalLinks = [];
+        foreach ($linkUrls as $i => $url) {
+            $url = trim((string) $url);
+            $title = trim((string) ($linkTitles[$i] ?? ''));
+            if ($url !== '' && filter_var($url, FILTER_VALIDATE_URL)) {
+                $externalLinks[] = [
+                    'title' => $title !== '' ? mb_substr($title, 0, 200) : $url,
+                    'url' => $url,
+                    'embed_type' => $this->detectEmbedType($url),
+                    'embed_url' => $this->getEmbedUrl($url),
+                ];
+            }
+        }
+
+        return [
+            'title' => $title,
+            'publish_date' => $publishDate,
+            'categories' => $categories,
+            'contents' => $contents,
+            'external_links' => $externalLinks,
+        ];
         return [
             'title' => $title,
             'publish_date' => $publishDate,
@@ -372,17 +399,20 @@ final class AdminBlogController extends AbstractController
             $safeName = $this->slugify($originalName);
             $filename = date('YmdHis') . '-' . str_replace('.', '', uniqid('', true)) . '-' . $safeName . '.' . $extension;
 
-            $uploadedItem->move($this->getUploadDirectory(), $filename);
+            $mimeType = (string) $uploadedItem->getMimeType();
+$fileSize = (int) $uploadedItem->getSize();
 
-            $media[] = [
-                'id' => $this->createId(),
-                'name' => $originalName !== '' ? $originalName : $filename,
-                'type' => self::ALLOWED_EXTENSIONS[$extension],
-                'path' => self::UPLOAD_PUBLIC_PREFIX . $filename,
-                'mime_type' => (string) $uploadedItem->getMimeType(),
-                'size' => (int) $uploadedItem->getSize(),
-                'uploaded_at' => date('c'),
-            ];
+$uploadedItem->move($this->getUploadDirectory(), $filename);
+
+$media[] = [
+    'id' => $this->createId(),
+    'name' => $originalName !== '' ? $originalName : $filename,
+    'type' => self::ALLOWED_EXTENSIONS[$extension],
+    'path' => self::UPLOAD_PUBLIC_PREFIX . $filename,
+    'mime_type' => $mimeType,
+    'size' => $fileSize,
+    'uploaded_at' => date('c'),
+];
         }
 
         return [
@@ -653,5 +683,46 @@ final class AdminBlogController extends AbstractController
         }
 
         return rtrim(mb_substr($value, 0, 177)) . '...';
+    }
+       private function detectEmbedType(string $url): string
+    {
+        if (preg_match('/youtube\.com\/watch|youtu\.be\/|youtube\.com\/embed/', $url)) {
+            return 'youtube';
+        }
+        if (str_contains($url, 'spotify.com')) {
+            return 'spotify';
+        }
+        if (str_contains($url, 'soundcloud.com')) {
+            return 'soundcloud';
+        }
+        if (str_contains($url, 'deezer.com')) {
+            return 'deezer';
+        }
+        if (str_contains($url, 'podcasts.apple.com') || str_contains($url, 'podcasts.google.com')) {
+            return 'podcast';
+        }
+
+        return 'link';
+    }
+
+     private function getEmbedUrl(string $url): string
+    {
+        // YouTube: youtu.be/ID ou youtube.com/watch?v=ID
+        if (preg_match('/youtu\.be\/([a-zA-Z0-9_-]+)/', $url, $matches)) {
+            return 'https://www.youtube.com/embed/' . $matches[1];
+        }
+        if (preg_match('/youtube\.com\/watch\?v=([a-zA-Z0-9_-]+)/', $url, $matches)) {
+            return 'https://www.youtube.com/embed/' . $matches[1];
+        }
+        if (preg_match('/youtube\.com\/shorts\/([a-zA-Z0-9_-]+)/', $url, $matches)) {
+            return 'https://www.youtube.com/embed/' . $matches[1];
+        }
+
+        // Spotify
+        if (str_contains($url, 'open.spotify.com')) {
+            return str_replace('open.spotify.com/', 'open.spotify.com/embed/', $url);
+        }
+
+        return $url;
     }
 }
