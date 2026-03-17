@@ -16,5 +16,8 @@
 
 ###> symfony/asset-mapper ###
 /public/assets/
+/public/uploads/mooks/*.pdf
+/public/uploads/comptes-rendus/*.pdf
+/public/uploads/planning/*.pdf
 /assets/vendor/
 ###< symfony/asset-mapper ###
