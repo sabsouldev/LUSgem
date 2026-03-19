@@ -1,151 +1,60 @@
-# Les Univers Singuliers - Site officiel GEM (Symfony)
+# 🧩 Les Univers Singuliers — Site officiel du GEM
 
-Site institutionnel et espace adherent pour **Les Univers Singuliers** (GEM autiste de Perigueux), developpe avec Symfony.
+Site institutionnel et espace adhérent pour **Les Univers Singuliers**, Groupe d'Entraide Mutuelle autiste de Périgueux.
 
-Le projet contient:
-- une partie publique (presentation institutionnelle),
-- un espace adherent securise,
-- un espace administration (comptes, publications, blog, suivi adherents),
-- une identite visuelle integree (banniere, couleurs, typographies).
+Développé avec **Symfony 7.4** par [VaryaCode](https://varyacode.fr).
 
-## Stack technique
-- PHP `>= 8.2`
-- Symfony `7.4`
-- Doctrine ORM + Migrations
-- Base de donnees: **MariaDB 10.4.32**
-- Twig
+---
 
-## Prerequis
-- PHP 8.2+
-- Composer
-- MariaDB 10.4.32
+## 🎯 Le projet
 
-## Installation
-1. Installer les dependances:
-```bash
-composer install
-```
+Un site sur mesure pour une association qui avait besoin :
+- d'une **vitrine institutionnelle** claire et accessible,
+- d'un **espace adhérent sécurisé** (planning, blog, propositions),
+- d'un **back-office d'administration** (gestion des membres, publications, contenus).
 
-2. Configurer la base dans `.env.local`:
-```dotenv
-DATABASE_URL="mysql://USER:PASSWORD@127.0.0.1:3306/lusgem?serverVersion=mariadb-10.4.32&charset=utf8mb4"
-```
+> Pas de CMS générique — un outil construit pour les besoins réels du terrain.
 
-3. Creer la base et lancer les migrations:
-```bash
-php bin/console doctrine:database:create
-php bin/console doctrine:migrations:migrate
-```
+---
 
-4. Creer un compte administrateur:
-```bash
-php bin/console app:user:create-admin admin@lusgem.local MotDePasseFort123!
-```
+## 🛠 Stack technique
 
-5. Lancer le projet (au choix):
-```bash
-symfony server:start
-```
-ou
-```bash
-php -S 127.0.0.1:8000 -t public
-```
+| Couche | Technologies |
+|---|---|
+| **Back-end** | PHP 8.2+ · Symfony 7.4 · Doctrine ORM |
+| **Base de données** | MariaDB |
+| **Templates** | Twig |
 
-## Authentification et roles
-- Pas d'inscription publique.
-- Les comptes sont crees uniquement par l'administration.
-- Roles:
-  - `ROLE_MEMBER`: acces espace adherent
-  - `ROLE_ADMIN`: acces administration
-- Connexion: `/connexion`
-- Deconnexion: `/deconnexion`
+---
 
-## Fonctionnalites
+## 🏗 Architecture
 
-### Partie publique
-- Accueil, fonctionnement, charte, activites, mooks, blog/newsletter (institutionnel), contact.
-- Route mook principale: `/mooks` (legacy `/moocks` conservee).
+Le site se compose de trois espaces avec des niveaux d'accès distincts :
 
-### Espace adherent (`/adherent/*`)
-- Dashboard "Vie du GEM"
-- Planning hebdomadaire (PDF)
-- Comptes-rendus (PDF)
-- Newsletter
-- Propositions (formulaire + suivi des dernieres propositions)
-- Blog adherents en lecture (6 derniers + filtres categorie/date)
+| Espace | Description |
+|---|---|
+| **Public** | Présentation du GEM, activités, charte, mooks, contact |
+| **Adhérent** | Dashboard, planning PDF, comptes-rendus, blog, propositions |
+| **Administration** | Gestion des adhérents, publications, blog avec médias |
 
-### Administration (`/admin/*`)
-- Dashboard admin
-- Gestion des adherents:
-  - creation de compte,
-  - edition de fiche (coordonnees),
-  - champs administratifs (`cotisation`, `attestation`, `notes`, champs personnalises),
-  - reinitialisation mot de passe,
-  - consultation des propositions et statut,
-  - export CSV du tableau adherents.
-- Gestion des publications:
-  - planning PDF,
-  - comptes-rendus PDF,
-  - mooks PDF,
-  - newsletters.
-- CRUD blog adherents (reserve admin) avec medias:
-  - PDF, images, videos, audio/podcasts.
+L'authentification est gérée par Symfony Security — pas d'inscription publique, les comptes sont créés par l'administration.
 
-## Stockage des donnees
+---
 
-### Base SQL (Doctrine)
-- Table `user` (authentification et roles).
+## ✨ Points notables
 
-### Fichiers JSON (`var/data`)
-- `blog-posts.json`
-- `newsletters.json`
-- `member-profiles.json`
-- `propositions.json`
+- **Export CSV** des adhérents pour le suivi administratif
+- **Upload et gestion de médias** : PDF, images, vidéos, podcasts
+- **Système de propositions** permettant aux adhérents de soumettre des idées
+- **Blog interne** avec filtres par catégorie et par date
+- **Identité visuelle intégrée** (bannière, couleurs, typographies de l'association)
 
-### Fichiers uploades (`public/uploads`)
-- `planning/`
-- `comptes-rendus/`
-- `mooks/`
-- `blog-media/`
+---
 
-## Routes principales
-- Public:
-  - `/`
-  - `/fonctionnement`
-  - `/charte-cadre`
-  - `/activites`
-  - `/mooks`
-  - `/blog-newsletter`
-  - `/contact`
-- Securite:
-  - `/connexion`
-  - `/deconnexion`
-- Adherent:
-  - `/adherent/vie-gem`
-  - `/adherent/blog`
-  - `/adherent/propositions`
-- Admin:
-  - `/admin`
-  - `/admin/adherents`
-  - `/admin/adherents/export.csv`
-  - `/admin/publications`
-  - `/admin/blog`
+## 📸 Aperçu
 
-## Commandes utiles
-```bash
-# Lister les routes
-php bin/console debug:router
+*Captures d'écran à venir.*
 
-# Verifier syntaxe Twig
-php bin/console lint:twig templates
+---
 
-# Verifier le container
-php bin/console lint:container
-
-# Creer/mettre a jour admin
-php bin/console app:user:create-admin <email> <mot_de_passe>
-```
-
-## Structure de reference
-- `docs/architecture-site.md`
-- `docs/database.md`
+<p align="center"><sub>Développé par <a href="https://varyacode.fr">VaryaCode</a> — 2025</sub></p>
