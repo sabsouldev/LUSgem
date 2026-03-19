@@ -183,6 +183,7 @@ final class MemberBlogController extends AbstractController
                 'categories' => $categories,
                 'contents' => $contents,
                 'media' => $media,
+                'external_links' => is_array($item['external_links'] ?? null) ? $item['external_links'] : [],
                 'excerpt' => $this->makeExcerpt($contents[0] ?? 'Contenu multimedia'),
                 'published_at' => (string) ($item['published_at'] ?? date('c')),
                 'updated_at' => (string) ($item['updated_at'] ?? date('c')),

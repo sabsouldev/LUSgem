@@ -158,6 +158,7 @@ final class AdminBlogController extends AbstractController
         $errors = [];
 
         if ($request->isMethod('POST')) {
+          
             // Token distinct creation/edition pour isoler les intentions de formulaire.
             $tokenId = 'admin_blog_save_' . ($isNew ? 'new' : $post['id']);
             if (!$this->isCsrfTokenValid($tokenId, (string) $request->request->get('_token'))) {
@@ -272,9 +273,8 @@ final class AdminBlogController extends AbstractController
         ]);
     }
 
-    private function extractFormInput(Request $request): array
+   private function extractFormInput(Request $request): array
     {
-        // Regroupe donnees standardisees (titre/date/categories/blocs texte).
         $title = trim((string) $request->request->get('title', ''));
         $publishDate = trim((string) $request->request->get('publish_date', date('Y-m-d')));
 
@@ -305,7 +305,8 @@ final class AdminBlogController extends AbstractController
                 $contents[] = $value;
             }
         }
-          $linkTitles = $request->request->all('external_link_titles');
+
+        $linkTitles = $request->request->all('external_link_titles');
         $linkUrls = $request->request->all('external_link_urls');
         if (!is_array($linkTitles)) $linkTitles = [];
         if (!is_array($linkUrls)) $linkUrls = [];
@@ -313,10 +314,10 @@ final class AdminBlogController extends AbstractController
         $externalLinks = [];
         foreach ($linkUrls as $i => $url) {
             $url = trim((string) $url);
-            $title = trim((string) ($linkTitles[$i] ?? ''));
+            $linkTitle = trim((string) ($linkTitles[$i] ?? ''));
             if ($url !== '' && filter_var($url, FILTER_VALIDATE_URL)) {
                 $externalLinks[] = [
-                    'title' => $title !== '' ? mb_substr($title, 0, 200) : $url,
+                    'title' => $linkTitle !== '' ? mb_substr($linkTitle, 0, 200) : $url,
                     'url' => $url,
                     'embed_type' => $this->detectEmbedType($url),
                     'embed_url' => $this->getEmbedUrl($url),
@@ -330,12 +331,6 @@ final class AdminBlogController extends AbstractController
             'categories' => $categories,
             'contents' => $contents,
             'external_links' => $externalLinks,
-        ];
-        return [
-            'title' => $title,
-            'publish_date' => $publishDate,
-            'categories' => $categories,
-            'contents' => $contents,
         ];
     }
 
@@ -556,6 +551,7 @@ $media[] = [
                 'categories' => $categories,
                 'contents' => $contents,
                 'media' => $media,
+                'external_links' => is_array($item['external_links'] ?? null) ? $item['external_links'] : [],
                 'excerpt' => $this->makeExcerpt($contents[0] ?? 'Contenu multimedia'),
                 'published_at' => (string) ($item['published_at'] ?? date('c')),
                 'updated_at' => (string) ($item['updated_at'] ?? date('c')),

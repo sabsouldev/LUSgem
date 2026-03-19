@@ -55,15 +55,8 @@
                 {% endif %}
             {% endfor %}
         {% endif %}
-
-        <div class="button-row" style="margin-top: 1.5rem;">
-            <a class="btn-primary" href="{{ path('app_admin_blog_edit', {id: post.id}) }}">Modifier</a>
-            <form method="post" action="{{ path('app_admin_blog_delete', {id: post.id}) }}" onsubmit="return confirm('Confirmer la suppression ?');">
-                <input type="hidden" name="_token" value="{{ csrf_token('admin_blog_delete_' ~ post.id) }}">
-                <button type="submit" class="btn-danger">Supprimer</button>
-            </form>
-        </div>
-         {% if post.external_links is defined and post.external_links is not empty %}
+        
+        {% if post.external_links is defined and post.external_links is not empty %}
             <section style="margin-top: 1.5rem;">
                 <h2>Videos et podcasts</h2>
                 {% for link in post.external_links %}
@@ -98,6 +91,14 @@
                 {% endfor %}
             </section>
         {% endif %}
+        <div class="button-row" style="margin-top: 1.5rem;">
+            <a class="btn-primary" href="{{ path('app_admin_blog_edit', {id: post.id}) }}">Modifier</a>
+            <form method="post" action="{{ path('app_admin_blog_delete', {id: post.id}) }}" onsubmit="return confirm('Confirmer la suppression ?');">
+                <input type="hidden" name="_token" value="{{ csrf_token('admin_blog_delete_' ~ post.id) }}">
+                <button type="submit" class="btn-danger">Supprimer</button>
+            </form>
+        </div>
+         
     </article>
 </div>
 {% endblock %}
