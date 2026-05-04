@@ -1,3 +1,464 @@
+/* ===================================
+   LES UNIVERS SINGULIERS — Styles
+   Charte graphique officielle
+   =================================== */
+
+/* --- Polices --- */
+@font-face {
+    font-family: 'League Spartan';
+    src: url('/fonts/LeagueSpartan-Bold.otf') format('opentype');
+    font-weight: 700;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Blogger Sans';
+    src: url('/fonts/Blogger_Sans.otf') format('opentype');
+    font-weight: 400;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Blogger Sans';
+    src: url('/fonts/Blogger_Sans-Bold.otf') format('opentype');
+    font-weight: 700;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Blogger Sans';
+    src: url('/fonts/Blogger_Sans-Light.otf') format('opentype');
+    font-weight: 300;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Blogger Sans';
+    src: url('/fonts/Blogger_Sans-Medium.otf') format('opentype');
+    font-weight: 500;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Blogger Sans';
+    src: url('/fonts/Blogger_Sans-Italic.otf') format('opentype');
+    font-weight: 400;
+    font-style: italic;
+    font-display: swap;
+}
+
+/* --- Reset & Base --- */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --color-primary: #1350A2;
+    --color-primary-light: #69A7F8;
+    --color-primary-bg: #e9f1fb;
+    --color-yellow: #FFDF57;
+    --color-orange: #FA7824;
+    --color-text: #1a1a2e;
+    --color-text-light: #555;
+    --color-bg: #f7fbfe;
+    --color-white: #ffffff;
+    --color-border: #d0e3f0;
+    --shadow-sm: 0 1px 3px rgba(19,80,162,0.08);
+    --shadow-md: 0 4px 12px rgba(19,80,162,0.12);
+    --radius: 8px;
+    --max-width: 1100px;
+    --font-title: 'League Spartan', 'Segoe UI', sans-serif;
+    --font-body: 'Blogger Sans', 'Segoe UI', sans-serif;
+}
+
 body {
-    background-color: skyblue;
+    font-family: var(--font-body);
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    line-height: 1.7;
+    font-size: 16px;
+}
+
+a {
+    color: var(--color-primary);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+a:hover {
+    color: var(--color-primary-light);
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* --- Skip link --- */
+.skip-link {
+    position: absolute;
+    top: -100%;
+    left: 0;
+    background: var(--color-primary);
+    color: var(--color-white);
+    padding: 0.5rem 1rem;
+    z-index: 1000;
+    font-size: 0.9rem;
+}
+
+.skip-link:focus {
+    top: 0;
+}
+
+.decor { display: none; }
+
+/* --- Container --- */
+.container {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 0 1.5rem;
+}
+
+/* ===================================
+   HEADER
+   =================================== */
+.site-header {
+    background: var(--color-primary) url('/images/banner.png') center center / cover no-repeat;
+    box-shadow: var(--shadow-md);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.site-header .header-inner {
+    background: rgba(19, 80, 162, 0.75);
+    padding: 1rem 1.5rem;
+}
+
+.brand-block {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    flex-shrink: 0;
+}
+
+.brand-logo {
+    height: 50px;
+    width: auto;
+    border-radius: 50%;
+}
+
+.brand-title {
+    font-family: var(--font-title);
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--color-white);
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+}
+
+.brand-subtitle {
+    font-size: 0.75rem;
+    color: var(--color-primary-light);
+    margin-top: 0.1rem;
+}
+
+/* --- Navigation --- */
+.main-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.2rem;
+}
+
+.main-nav a {
+    padding: 0.4rem 0.7rem;
+    border-radius: var(--radius);
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--color-white);
+    transition: background 0.2s, color 0.2s;
+}
+
+.main-nav a:hover {
+    background: rgba(255,255,255,0.15);
+    color: var(--color-yellow);
+}
+
+.member-nav {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.member-nav a {
+    padding: 0.35rem 0.7rem;
+    border-radius: var(--radius);
+    font-size: 0.8rem;
+    font-weight: 600;
+    background: var(--color-orange);
+    color: var(--color-white);
+    transition: background 0.2s;
+}
+
+.member-nav a:hover {
+    background: var(--color-yellow);
+    color: var(--color-primary);
+}
+
+/* ===================================
+   BANNER
+   =================================== */
+.banner {
+    margin: 0 0 2rem;
+    border-radius: 0 0 var(--radius) var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+}
+
+.banner img {
+    width: 100%;
+    display: block;
+}
+
+/* ===================================
+   MAIN CONTENT
+   =================================== */
+.site-main {
+    min-height: 60vh;
+    padding: 2rem 0 3rem;
+}
+
+/* --- Headings --- */
+h1, h2, h3 {
+    font-family: var(--font-title);
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+}
+
+/* --- Content panels --- */
+.content-panel {
+    background: var(--color-white);
+    border-radius: var(--radius);
+    padding: 2rem 2.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: var(--shadow-sm);
+    border-left: 4px solid var(--color-primary);
+}
+
+.content-panel h1 {
+    font-size: 1.8rem;
+    color: var(--color-primary);
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 3px solid var(--color-yellow);
+}
+
+.content-panel h2 {
+    font-size: 1.4rem;
+    color: var(--color-primary);
+    margin-bottom: 0.8rem;
+    margin-top: 1.5rem;
+}
+
+.content-panel h3 {
+    font-size: 1.15rem;
+    color: var(--color-primary-light);
+    margin-bottom: 0.5rem;
+    margin-top: 1rem;
+}
+
+.content-panel p {
+    margin-bottom: 0.8rem;
+    color: var(--color-text);
+}
+
+.content-panel ul {
+    margin: 0.8rem 0 0.8rem 1.5rem;
+}
+
+.content-panel li {
+    margin-bottom: 0.4rem;
+    color: var(--color-text);
+}
+
+.content-panel li::marker {
+    color: var(--color-orange);
+}
+
+/* --- Emphasis panel --- */
+.emphasis-panel {
+    background: var(--color-primary-bg);
+    border-left-color: var(--color-orange);
+}
+
+/* ===================================
+   FORMS
+   =================================== */
+.form-group {
+    margin-bottom: 1.2rem;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+    font-size: 0.9rem;
+    color: var(--color-text);
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+    width: 100%;
+    padding: 0.6rem 0.8rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    font-size: 0.95rem;
+    font-family: var(--font-body);
+    transition: border-color 0.2s;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(19, 80, 162, 0.15);
+}
+
+.form-group textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+/* --- Buttons --- */
+.btn {
+    display: inline-block;
+    padding: 0.6rem 1.5rem;
+    border: none;
+    border-radius: var(--radius);
+    font-size: 0.95rem;
+    font-family: var(--font-title);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+}
+
+.btn:active {
+    transform: scale(0.98);
+}
+
+.btn-primary {
+    background: var(--color-orange);
+    color: var(--color-white);
+}
+
+.btn-primary:hover {
+    background: #e06a1a;
+    color: var(--color-white);
+}
+
+.btn-secondary {
+    background: var(--color-primary-bg);
+    color: var(--color-primary);
+}
+
+.btn-secondary:hover {
+    background: var(--color-border);
+}
+
+/* ===================================
+   MOOKS
+   =================================== */
+.mook-card {
+    background: var(--color-white);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: box-shadow 0.2s;
+}
+
+.mook-card:hover {
+    box-shadow: var(--shadow-md);
+}
+
+/* ===================================
+   FLASH MESSAGES
+   =================================== */
+.flash-success {
+    background: #d4edda;
+    color: #155724;
+    padding: 0.8rem 1.2rem;
+    border-radius: var(--radius);
+    margin-bottom: 1rem;
+    border: 1px solid #c3e6cb;
+}
+
+.flash-error {
+    background: #f8d7da;
+    color: #721c24;
+    padding: 0.8rem 1.2rem;
+    border-radius: var(--radius);
+    margin-bottom: 1rem;
+    border: 1px solid #f5c6cb;
+}
+
+/* ===================================
+   FOOTER
+   =================================== */
+.site-footer {
+    background: var(--color-primary);
+    color: var(--color-white);
+    padding: 2rem 0;
+    margin-top: 3rem;
+}
+
+.site-footer p {
+    text-align: center;
+    font-size: 0.9rem;
+    font-family: var(--font-body);
+    margin-bottom: 0.3rem;
+}
+
+.site-footer strong {
+    color: var(--color-yellow);
+}
+
+/* ===================================
+   RESPONSIVE
+   =================================== */
+@media (max-width: 768px) {
+    .header-inner {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .main-nav {
+        flex-direction: column;
+        gap: 0.1rem;
+    }
+
+    .main-nav a {
+        padding: 0.5rem 0;
+    }
+
+    .member-nav {
+        flex-direction: column;
+        gap: 0.3rem;
+    }
+
+    .content-panel {
+        padding: 1.5rem 1.2rem;
+    }
+
+    .brand-title {
+        font-size: 1.2rem;
+    }
 }
