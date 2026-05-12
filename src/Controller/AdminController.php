@@ -141,36 +141,37 @@ final class AdminController extends AbstractController
         return $response;
     }
     #[Route('/adherents/{id}', name: 'app_admin_adherent_edit', methods: ['GET', 'POST'])]
-public function adherentEdit(int $id, Request $request): Response
-{
-    $this->ensureDataDirectories();
+    public function adherentEdit(int $id, Request $request): Response
+    {
+        $this->ensureDataDirectories();
 
-    $user = $this->entityManager->getRepository(User::class)->find($id);
-    if (!$user instanceof User) {
-        $this->addFlash('error', 'Adherent introuvable.');
-        return $this->redirectToRoute('app_admin_adherents');
+        $user = $this->entityManager->getRepository(User::class)->find($id);
+        if (!$user instanceof User) {
+            $this->addFlash('error', 'Adherent introuvable.');
+
+            return $this->redirectToRoute('app_admin_adherents');
+        }
+
+        if ($request->isMethod('POST')) {
+            $action = (string) $request->request->get('adherent_action');
+
+            match ($action) {
+                'save_profile' => $this->handleSaveProfile($request),
+                'reset_password' => $this->handleResetPassword($request),
+                default => $this->addFlash('warning', 'Action inconnue.'),
+            };
+
+            return $this->redirectToRoute('app_admin_adherent_edit', ['id' => $id]);
+        }
+
+        $profiles = $this->readEntries($this->getMemberProfilesStoragePath());
+        $profile = $profiles[(string) $id] ?? [];
+
+        return $this->render('admin/adherent_edit.html.twig', [
+            'user' => $user,
+            'profile' => $profile,
+        ]);
     }
-
-    if ($request->isMethod('POST')) {
-        $action = (string) $request->request->get('adherent_action');
-
-        match ($action) {
-            'save_profile' => $this->handleSaveProfile($request),
-            'reset_password' => $this->handleResetPassword($request),
-            default => $this->addFlash('warning', 'Action inconnue.'),
-        };
-
-        return $this->redirectToRoute('app_admin_adherent_edit', ['id' => $id]);
-    }
-
-    $profiles = $this->readEntries($this->getMemberProfilesStoragePath());
-    $profile = $profiles[(string) $id] ?? [];
-
-    return $this->render('admin/adherent_edit.html.twig', [
-        'user' => $user,
-        'profile' => $profile,
-    ]);
-}
     #[Route('/publications', name: 'app_admin_publications', methods: ['GET', 'POST'])]
     public function publications(Request $request, DocumentRepository $documentRepository): Response
     {

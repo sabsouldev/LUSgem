@@ -12,10 +12,19 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Address;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Routing\Attribute\Route;
 
 final class PublicController extends AbstractController
 {
+    public function __construct(
+        #[Autowire('%app.mail_from%')]
+        private readonly string $mailFrom,
+        #[Autowire('%app.mail_to_contact%')]
+        private readonly string $mailToContact,
+    ) {
+    }
+
     #[Route('/', name: 'app_home')]
     public function home(): Response
     {
@@ -74,8 +83,8 @@ final class PublicController extends AbstractController
             $em->flush();
 
             $notification = (new TemplatedEmail())
-                ->from(new Address('noreply@lusgem.varyacode.fr', 'Les Univers Singuliers'))
-                ->to('gem.perigueux@fondationdelisle.fr')
+                ->from(new Address($this->mailFrom, 'Les Univers Singuliers'))
+                ->to($this->mailToContact)
                 ->subject('Nouveau message de contact : ' . $subject)
                 ->htmlTemplate('emails/contact_notification.html.twig')
                 ->context([
