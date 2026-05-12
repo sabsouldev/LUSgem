@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\ContactMessage;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -217,34 +218,31 @@ public function adherentEdit(int $id, Request $request): Response
     #[Route('/messages', name: 'app_admin_messages')]
     public function messages(): Response
     {
-        $projectDir = (string) $this->getParameter('kernel.project_dir');
-        $messages = $this->readEntries($projectDir . '/var/data/contact-messages.json');
+        $messages = $this->entityManager->getRepository(ContactMessage::class)
+            ->findBy([], ['createdAt' => 'DESC']);
 
         return $this->render('admin/messages.html.twig', [
             'messages' => $messages,
         ]);
     }
 
-     #[Route('/messages/{index}', name: 'app_admin_message_show', methods: ['GET'])]
-    public function messageShow(int $index): Response
+    #[Route('/messages/{id}', name: 'app_admin_message_show', methods: ['GET'])]
+    public function messageShow(int $id): Response
     {
-        $projectDir = (string) $this->getParameter('kernel.project_dir');
-        $storageFile = $projectDir . '/var/data/contact-messages.json';
-        $messages = $this->readEntries($storageFile);
+        $msg = $this->entityManager->getRepository(ContactMessage::class)->find($id);
 
-        if (!isset($messages[$index])) {
+        if (!$msg instanceof ContactMessage) {
             $this->addFlash('error', 'Message introuvable.');
             return $this->redirectToRoute('app_admin_messages');
         }
 
-        // Marquer comme lu
-        if (!($messages[$index]['is_read'] ?? false)) {
-            $messages[$index]['is_read'] = true;
-            $this->writeEntries($storageFile, $messages);
+        if (!$msg->isRead()) {
+            $msg->setIsRead(true);
+            $this->entityManager->flush();
         }
 
         return $this->render('admin/message_show.html.twig', [
-            'msg' => $messages[$index],
+            'msg' => $msg,
         ]);
     }
     

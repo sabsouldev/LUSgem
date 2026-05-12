@@ -14,11 +14,11 @@
             <dd>{{ msg.name }} — <a href="mailto:{{ msg.email }}">{{ msg.email }}</a></dd>
 
             <dt>Date</dt>
-            <dd>{{ msg.sent_at|date('d/m/Y a H:i') }}</dd>
+            <dd>{{ msg.createdAt|date('d/m/Y a H:i') }}</dd>
 
             <dt>Statut</dt>
             <dd>
-                {% if msg.is_read %}
+                {% if msg.read %}
                     <span class="badge badge-success">Lu</span>
                 {% else %}
                     <span class="badge badge-pending">Non lu</span>

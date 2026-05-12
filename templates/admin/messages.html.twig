@@ -1,4 +1,4 @@
-﻿{% extends 'base.html.twig' %}
+{% extends 'base.html.twig' %}
 
 {% block title %}Messages de contact | Les Univers Singuliers{% endblock %}
 
@@ -29,21 +29,21 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for key, msg in messages %}
+                    {% for msg in messages %}
                         <tr>
-                            <td>{{ msg.sent_at|date('d/m/Y H:i') }}</td>
+                            <td>{{ msg.createdAt|date('d/m/Y H:i') }}</td>
                             <td>{{ msg.name }}</td>
                             <td><a href="mailto:{{ msg.email }}">{{ msg.email }}</a></td>
                             <td>{{ msg.subject }}</td>
                             <td>
-                                {% if msg.is_read %}
+                                {% if msg.read %}
                                     <span class="badge badge-success">Lu</span>
                                 {% else %}
                                     <span class="badge badge-pending">Non lu</span>
                                 {% endif %}
                             </td>
                             <td>
-                                <a href="{{ path('app_admin_message_show', {index: key}) }}" class="btn-primary btn-small">Voir</a>
+                                <a href="{{ path('app_admin_message_show', {id: msg.id}) }}" class="btn-primary btn-small">Voir</a>
                             </td>
                         </tr>
                     {% endfor %}
