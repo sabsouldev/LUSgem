@@ -1,12 +1,13 @@
-﻿{% extends 'base.html.twig' %}
+{% extends 'base.html.twig' %}
 
 {% block title %}Accueil | Les Univers Singuliers{% endblock %}
 
 {% block body %}
-<div class="container">
-    
+{% include 'partials/_banner.html.twig' %}
 
-    <section class="content-panel">
+<div class="container">
+    {# --- Qui sommes-nous ? --- #}
+    <section id="qui-sommes-nous" class="content-panel">
         <h1>Qui sommes-nous ?</h1>
         <p>Nous sommes un GEM (Groupe d'Entraide Mutuelle), association « Les Univers Singuliers ». C'est un lieu de rencontre ouvert aux adultes concernés par les Troubles du Spectre de l'Autisme.</p>
         <p>C'est un espace ressources, qui favorise les échanges, l'entraide, l'information, l'organisation d'activités culturelles et de loisirs ainsi que la construction et la mise en œuvre de projets de sensibilisation à l'autisme.</p>
@@ -23,6 +24,118 @@
             <li>Un espace sécurisé pour les adhérents.</li>
             <li>Une vitrine institutionnelle claire.</li>
         </ul>
+    </section>
+
+    {# --- Fonctionnement --- #}
+    <section id="fonctionnement" class="content-panel">
+        <h2>Fonctionnement du GEM</h2>
+        <p>Le GEM repose sur une organisation claire, stable et partagée entre adhérents, animateurs et bureau associatif.</p>
+    </section>
+
+    <section class="grid-two">
+        <article class="content-panel">
+            <h3>Rôle des adhérents</h3>
+            <ul>
+                <li>Participer à la vie collective et proposer des activités.</li>
+                <li>Exprimer leurs besoins et leurs limites de manière claire.</li>
+                <li>Respecter les autres adhérents, les professionnels et le cadre commun.</li>
+            </ul>
+        </article>
+
+        <article class="content-panel">
+            <h3>Rôle des animateurs</h3>
+            <p>Deux animateurs à temps complet accompagnent la dynamique quotidienne du GEM :</p>
+            <ul>
+                <li>Soutien à l'organisation des activités.</li>
+                <li>Appui à la médiation de premier niveau.</li>
+                <li>Veille au maintien d'un cadre sécurisant et prévisible.</li>
+            </ul>
+        </article>
+
+        <article class="content-panel">
+            <h3>Rôle du bureau</h3>
+            <ul>
+                <li>Garantir la gouvernance associative et les décisions institutionnelles.</li>
+                <li>Assurer la continuité administrative, financière et stratégique.</li>
+                <li>Soutenir les animateurs dans le cadre du projet associatif.</li>
+            </ul>
+        </article>
+
+        <article class="content-panel">
+            <h3>Rôle du médiateur</h3>
+            <ul>
+                <li>Intervenir avec neutralité.</li>
+                <li>Respecter la confidentialité des échanges.</li>
+                <li>Conserver une indépendance vis-à-vis des conflits internes.</li>
+            </ul>
+        </article>
+    </section>
+
+    <section class="content-panel emphasis-panel">
+        <h2>Cadre de respect mutuel</h2>
+        <p>Le GEM fonctionne avec des repères explicites : écoute, parole posée, absence de jugement et recherche de solutions concrètes.</p>
+    </section>
+
+    {# --- Charte --- #}
+    <section id="charte" class="content-panel">
+        <h2>Charte et cadre de respect</h2>
+        <p>Cette charte protège les personnes, la qualité des échanges et la stabilité du collectif.</p>
+    </section>
+
+    <section class="grid-two">
+        <article class="content-panel">
+            <h3>Communication respectueuse</h3>
+            <ul>
+                <li>Parler avec clarté et sans agressivité.</li>
+                <li>Éviter les remarques humiliantes ou les sous-entendus blessants.</li>
+                <li>Prendre en compte les sensibilités de chacun.</li>
+            </ul>
+        </article>
+
+        <article class="content-panel">
+            <h3>Équité</h3>
+            <p>L'ancienneté dans l'association ne donne pas de privilège particulier. Chaque adhérent dispose des mêmes droits et devoirs.</p>
+        </article>
+
+        <article class="content-panel">
+            <h3>Règles de fonctionnement</h3>
+            <ul>
+                <li>Respect des horaires, des espaces et du matériel.</li>
+                <li>Information claire en cas d'absence à une activité prévue.</li>
+                <li>Décisions collectives explicitées et tracées dans les comptes rendus.</li>
+            </ul>
+        </article>
+
+        <article class="content-panel">
+            <h3>Gestion des conflits</h3>
+            <ul>
+                <li>Étape 1 : échange direct et apaisé entre personnes concernées.</li>
+                <li>Étape 2 : soutien d'un animateur pour clarifier la situation.</li>
+                <li>Étape 3 : médiation si nécessaire, avec neutralité et confidentialité.</li>
+            </ul>
+        </article>
+    </section>
+
+    <section class="content-panel emphasis-panel">
+        <h2>Responsabilité individuelle</h2>
+        <p>Chaque personne est responsable de ses paroles, de ses actes et du respect du cadre commun.</p>
+    </section>
+
+    {# --- Activités --- #}
+    <section id="activites" class="content-panel">
+        <h2>Activités</h2>
+        <p>Au GEM nous nous rencontrons pour discuter et boire un thé ou un café, nous partageons des repas et nous réalisons de nombreuses activités.</p>
+    </section>
+
+    <section class="activity-grid" aria-label="Liste des activités proposées">
+        <article class="activity-card"><span class="activity-icon" aria-hidden="true">M</span><h2>Musique</h2></article>
+        <article class="activity-card"><span class="activity-icon" aria-hidden="true">D</span><h2>Débats</h2></article>
+        <article class="activity-card"><span class="activity-icon" aria-hidden="true">C</span><h2>Cuisine</h2></article>
+        <article class="activity-card"><span class="activity-icon" aria-hidden="true">A</span><h2>Ateliers créatifs</h2></article>
+        <article class="activity-card"><span class="activity-icon" aria-hidden="true">B</span><h2>Bien être</h2></article>
+        <article class="activity-card"><span class="activity-icon" aria-hidden="true">B</span><h2>Balades</h2></article>
+        <article class="activity-card"><span class="activity-icon" aria-hidden="true">J</span><h2>Jardinage</h2></article>
+        <article class="activity-card"><span class="activity-icon" aria-hidden="true">S</span><h2>Jeux de société</h2></article>
     </section>
 </div>
 {% endblock %}
