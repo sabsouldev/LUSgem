@@ -7,7 +7,12 @@
     <section class="content-panel">
         <h1>Planning hebdomadaire</h1>
         <p>Le planning est publié en PDF et actualisé chaque semaine par l'administration.</p>
-        <a class="btn-primary" href="/uploads/planning/planning-semaine.pdf">Télécharger le planning de la semaine</a>
+        {% if planning %}
+            <a class="btn-primary" href="{{ planning.publicPath }}" target="_blank" rel="noopener">Consulter le planning (PDF)</a>
+            <p class="blog-meta">Mis à jour le {{ planning.uploadedAt|date('d/m/Y à H:i') }}</p>
+        {% else %}
+            <p>Aucun planning n'a encore été publié.</p>
+        {% endif %}
     </section>
 </div>
 {% endblock %}

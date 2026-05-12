@@ -3,7 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\ContactMessage;
+use App\Entity\Document;
 use App\Entity\User;
+use App\Repository\DocumentRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Filesystem\Filesystem;
@@ -170,13 +172,12 @@ public function adherentEdit(int $id, Request $request): Response
     ]);
 }
     #[Route('/publications', name: 'app_admin_publications', methods: ['GET', 'POST'])]
-    public function publications(Request $request): Response
+    public function publications(Request $request, DocumentRepository $documentRepository): Response
     {
         $projectDir = (string) $this->getParameter('kernel.project_dir');
         $uploadsDir = $projectDir . '/public/uploads';
         $dataDir = $projectDir . '/var/data';
 
-        // Preparation systematique des dossiers de publication.
         $filesystem = new Filesystem();
         $filesystem->mkdir([
             $uploadsDir . '/planning',
@@ -185,12 +186,9 @@ public function adherentEdit(int $id, Request $request): Response
             $dataDir,
         ]);
 
-        // Compatibilite: copie des anciens fichiers "moock" vers le dossier "mook".
-    
-
         if ($request->isMethod('POST')) {
             $action = (string) $request->request->get('publication_action');
-            
+
             match ($action) {
                 'planning_upload' => $this->handlePlanningUpload($request, $uploadsDir . '/planning'),
                 'report_upload' => $this->handleReportUpload($request, $uploadsDir . '/comptes-rendus'),
@@ -202,17 +200,44 @@ public function adherentEdit(int $id, Request $request): Response
             return $this->redirectToRoute('app_admin_publications');
         }
 
-        $planningFile = file_exists($uploadsDir . '/planning/planning-semaine.pdf') ? '/uploads/planning/planning-semaine.pdf' : null;
-        $reports = array_reverse(array_map('basename', glob($uploadsDir . '/comptes-rendus/*.pdf') ?: []));
-        $mooks = array_reverse(array_map('basename', glob($uploadsDir . '/mooks/*.pdf') ?: []));
         $newsletters = $this->readEntries($dataDir . '/newsletters.json');
 
         return $this->render('admin/publications.html.twig', [
-            'planning_file' => $planningFile,
-            'reports' => $reports,
-            'mooks' => $mooks,
+            'plannings' => $documentRepository->findByType(Document::TYPE_PLANNING),
+            'reports' => $documentRepository->findByType(Document::TYPE_REPORT),
+            'mooks' => $documentRepository->findByType(Document::TYPE_MOOK),
             'newsletters' => $newsletters,
         ]);
+    }
+
+    #[Route('/publications/{id}/supprimer', name: 'app_admin_publication_delete', methods: ['POST'])]
+    public function publicationDelete(int $id, Request $request): Response
+    {
+        $doc = $this->entityManager->getRepository(Document::class)->find($id);
+
+        if (!$doc instanceof Document) {
+            $this->addFlash('error', 'Document introuvable.');
+            return $this->redirectToRoute('app_admin_publications');
+        }
+
+        if (!$this->isCsrfTokenValid('admin_doc_delete_' . $id, (string) $request->request->get('_token'))) {
+            $this->addFlash('error', 'Jeton CSRF invalide.');
+            return $this->redirectToRoute('app_admin_publications');
+        }
+
+        $projectDir = (string) $this->getParameter('kernel.project_dir');
+        $filePath = $projectDir . '/public/uploads/' . $doc->getUploadSubdir() . '/' . $doc->getFilename();
+
+        if (file_exists($filePath)) {
+            @unlink($filePath);
+        }
+
+        $this->entityManager->remove($doc);
+        $this->entityManager->flush();
+
+        $this->addFlash('success', 'Document "' . $doc->getLabel() . '" supprime.');
+
+        return $this->redirectToRoute('app_admin_publications');
     }
 
     #[Route('/messages', name: 'app_admin_messages')]
@@ -385,7 +410,6 @@ public function adherentEdit(int $id, Request $request): Response
 
     private function handlePlanningUpload(Request $request, string $targetDir): void
     {
-        // Upload remplace toujours le planning courant (nom de fichier fixe).
         if (!$this->isCsrfTokenValid('admin_planning', (string) $request->request->get('_token'))) {
             $this->addFlash('error', 'Jeton CSRF invalide pour le planning.');
 
@@ -399,13 +423,21 @@ public function adherentEdit(int $id, Request $request): Response
             return;
         }
 
-        $file->move($targetDir, 'planning-semaine.pdf');
+        $filename = 'planning-' . date('Ymd-His') . '.pdf';
+        $file->move($targetDir, $filename);
+
+        $doc = new Document();
+        $doc->setType(Document::TYPE_PLANNING);
+        $doc->setLabel('Planning du ' . date('d/m/Y'));
+        $doc->setFilename($filename);
+        $this->entityManager->persist($doc);
+        $this->entityManager->flush();
+
         $this->addFlash('success', 'Planning hebdomadaire mis a jour.');
     }
 
     private function handleReportUpload(Request $request, string $targetDir): void
     {
-        // Compte-rendu versionne par mois (YYYY-MM) dans le nom de fichier.
         if (!$this->isCsrfTokenValid('admin_report', (string) $request->request->get('_token'))) {
             $this->addFlash('error', 'Jeton CSRF invalide pour le compte rendu.');
 
@@ -426,20 +458,28 @@ public function adherentEdit(int $id, Request $request): Response
             return;
         }
 
-        $file->move($targetDir, 'compte-rendu-' . $month . '.pdf');
+        $filename = 'compte-rendu-' . $month . '.pdf';
+        $file->move($targetDir, $filename);
+
+        $doc = new Document();
+        $doc->setType(Document::TYPE_REPORT);
+        $doc->setLabel('Compte rendu ' . $month);
+        $doc->setFilename($filename);
+        $this->entityManager->persist($doc);
+        $this->entityManager->flush();
+
         $this->addFlash('success', 'Compte rendu publie pour ' . $month . '.');
     }
 
     private function handleMookUpload(Request $request, string $targetDir): void
     {
-        $csrfToken = (string) $request->request->get('_token');
-        if (!$this->isCsrfTokenValid('admin_mook', $csrfToken)) {
+        if (!$this->isCsrfTokenValid('admin_mook', (string) $request->request->get('_token'))) {
             $this->addFlash('error', 'Jeton CSRF invalide pour le mook.');
 
             return;
         }
 
-           $number = (string) ($request->request->get('mook_number', '1'));
+        $number = (string) ($request->request->get('mook_number', '1'));
         if (!in_array($number, ['1', '2'], true)) {
             $this->addFlash('error', 'Numero de mook invalide.');
 
@@ -453,9 +493,18 @@ public function adherentEdit(int $id, Request $request): Response
             return;
         }
 
-        $file->move($targetDir, 'mook-' . $number . '.pdf');
+        $filename = 'mook-' . $number . '.pdf';
+        $file->move($targetDir, $filename);
+
+        $doc = new Document();
+        $doc->setType(Document::TYPE_MOOK);
+        $doc->setLabel('Mook ' . $number);
+        $doc->setFilename($filename);
+        $this->entityManager->persist($doc);
+        $this->entityManager->flush();
+
         $this->addFlash('success', 'Mook ' . $number . ' mis a jour.');
-}
+    }
 
     private function handleNewsletterPublish(Request $request, string $storageFile): void
     {

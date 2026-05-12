@@ -11,23 +11,35 @@
     </section>
 
     <section class="mook-list">
-        <article class="content-panel mook-card">
-            <h2>MOOK 1</h2>
-            <img src="{{ asset('assets/images/mook-1.jpg') }}" alt="Couverture du Mook 1" class="mook-cover">
-            <p>À la suite d'un échange courant mars 2020 concernant une participation à la journée internationale d'information sur l'autisme (2 avril 2020), l'idée de rassembler des témoignages de personnes autistes a émergé. Nous souhaitions donner la possibilité à chacun de mettre en avant son univers singulier, au-delà des clichés, et avec une liberté totale d'expression à travers des témoignages et des illustrations. Au fur et à mesure, nous avons rassemblé des récits qui composent un patchwork reflétant la diversité de nos univers singuliers, puis sont venus étoffer notre mook un dictionnaire amoureux de l'autisme et un guide pour permettre aux personnes non autistes de mieux appréhender l'autisme et les personnes autistes, afin qu'elles bénéficient d'outils précieux pour co-construire une relation respectueuse.</p>
+        <article class="mook-card">
+            <h2>Mook 1</h2>
+            <div class="mook-content">
+                <img src="{{ asset('images/mook-1.jpg') }}" alt="Couverture du Mook 1" class="mook-cover">
+                <p class="mook-text">À la suite d'un échange courant mars 2020 concernant une participation à la journée internationale d'information sur l'autisme (2 avril 2020), l'idée de rassembler des témoignages de personnes autistes a émergé. Nous souhaitions donner la possibilité à chacun de mettre en avant son univers singulier, au-delà des clichés, et avec une liberté totale d'expression à travers des témoignages et des illustrations. Au fur et à mesure, nous avons rassemblé des récits qui composent un patchwork reflétant la diversité de nos univers singuliers, puis sont venus étoffer notre mook un dictionnaire amoureux de l'autisme et un guide pour permettre aux personnes non autistes de mieux appréhender l'autisme et les personnes autistes, afin qu'elles bénéficient d'outils précieux pour co-construire une relation respectueuse.</p>
+            </div>
             <div class="button-row">
-                <a href="/uploads/mooks/mook-1.pdf" class="btn-primary">Consulter le Mook</a>
-                <a href="/uploads/mooks/mook-1.pdf" class="btn-secondary" download>Télécharger</a>
+                {% if mook1 %}
+                    <a href="{{ mook1.publicPath }}" class="btn btn-primary" target="_blank" rel="noopener">Consulter le Mook</a>
+                    <a href="{{ mook1.publicPath }}" class="btn btn-secondary" download>Télécharger</a>
+                {% else %}
+                    <span class="badge badge-pending">PDF bientôt disponible</span>
+                {% endif %}
             </div>
         </article>
 
-        <article class="content-panel mook-card">
-            <h2>MOOK 2</h2>
-            <img src="{{ asset('assets/images/mook-2.jpg') }}" aria-label="Couverture du Mook 2" class="mook-cover">
-            <p>Espace prévu pour le contenu du second mook. Le texte peut être complété après validations éditoriales.</p>
+        <article class="mook-card">
+            <h2>Mook 2</h2>
+            <div class="mook-content">
+                <img src="{{ asset('images/mook-2.jpg') }}" alt="Couverture du Mook 2" class="mook-cover">
+                <p class="mook-text">Espace prévu pour le contenu du second mook. Le texte peut être complété après validations éditoriales.</p>
+            </div>
             <div class="button-row">
-                <a href="/uploads/mooks/mook-2.pdf" class="btn-primary">Consulter le Mook</a>
-                <a href="/uploads/mooks/mook-2.pdf" class="btn-secondary">Télécharger</a>
+                {% if mook2 %}
+                    <a href="{{ mook2.publicPath }}" class="btn btn-primary" target="_blank" rel="noopener">Consulter le Mook</a>
+                    <a href="{{ mook2.publicPath }}" class="btn btn-secondary" download>Télécharger</a>
+                {% else %}
+                    <span class="badge badge-pending">PDF bientôt disponible</span>
+                {% endif %}
             </div>
         </article>
     </section>

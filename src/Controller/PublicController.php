@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\ContactMessage;
+use App\Entity\Document;
+use App\Repository\DocumentRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -21,9 +23,18 @@ final class PublicController extends AbstractController
     }
 
     #[Route('/mooks', name: 'app_mooks')]
-    public function mooks(): Response
+    public function mooks(DocumentRepository $documentRepository): Response
     {
-        return $this->render('public/mooks.html.twig');
+        $mooks = $documentRepository->findByType(Document::TYPE_MOOK);
+        $mookMap = [];
+        foreach ($mooks as $mook) {
+            $mookMap[$mook->getFilename()] = $mook;
+        }
+
+        return $this->render('public/mooks.html.twig', [
+            'mook1' => $mookMap['mook-1.pdf'] ?? null,
+            'mook2' => $mookMap['mook-2.pdf'] ?? null,
+        ]);
     }
 
     #[Route('/contact', name: 'app_contact', methods: ['GET', 'POST'])]

@@ -6,7 +6,7 @@
 <div class="container">
     <section class="content-panel">
         <h1>Gestion des publications</h1>
-        <p>Tous les formulaires d'administration sont centralises ici.</p>
+        <p>Upload des documents PDF et gestion de la newsletter. Les fichiers sont enregistrés en base de données.</p>
 
         {% for type, messages in app.flashes %}
             {% for message in messages %}
@@ -25,11 +25,30 @@
                 <label for="planning_pdf">Fichier PDF</label>
                 <input id="planning_pdf" name="planning_pdf" type="file" accept=".pdf" required>
 
-                <button type="submit" class="btn-primary">Mettre a jour le planning</button>
+                <button type="submit" class="btn-primary">Mettre à jour le planning</button>
             </form>
 
-            {% if planning_file %}
-                <p><a href="{{ planning_file }}" target="_blank" rel="noopener">Voir le planning actuel</a></p>
+            {% if plannings is not empty %}
+                <h3>Plannings publiés</h3>
+                <table class="data-table">
+                    <thead>
+                        <tr><th>Document</th><th>Date</th><th>Actions</th></tr>
+                    </thead>
+                    <tbody>
+                        {% for doc in plannings %}
+                            <tr>
+                                <td><a href="{{ doc.publicPath }}" target="_blank" rel="noopener">{{ doc.label }}</a></td>
+                                <td>{{ doc.uploadedAt|date('d/m/Y H:i') }}</td>
+                                <td>
+                                    <form method="post" action="{{ path('app_admin_publication_delete', {id: doc.id}) }}" onsubmit="return confirm('Supprimer ce planning ?')">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('admin_doc_delete_' ~ doc.id) }}">
+                                        <button type="submit" class="btn-danger btn-sm">Supprimer</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             {% endif %}
         </article>
 
@@ -49,12 +68,26 @@
             </form>
 
             {% if reports is not empty %}
-                <p>Derniers comptes rendus:</p>
-                <ul>
-                    {% for item in reports|slice(0, 5) %}
-                        <li><a href="/uploads/comptes-rendus/{{ item }}" target="_blank" rel="noopener">{{ item }}</a></li>
-                    {% endfor %}
-                </ul>
+                <h3>Comptes rendus publiés</h3>
+                <table class="data-table">
+                    <thead>
+                        <tr><th>Document</th><th>Date</th><th>Actions</th></tr>
+                    </thead>
+                    <tbody>
+                        {% for doc in reports %}
+                            <tr>
+                                <td><a href="{{ doc.publicPath }}" target="_blank" rel="noopener">{{ doc.label }}</a></td>
+                                <td>{{ doc.uploadedAt|date('d/m/Y H:i') }}</td>
+                                <td>
+                                    <form method="post" action="{{ path('app_admin_publication_delete', {id: doc.id}) }}" onsubmit="return confirm('Supprimer ce compte rendu ?')">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('admin_doc_delete_' ~ doc.id) }}">
+                                        <button type="submit" class="btn-danger btn-sm">Supprimer</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             {% endif %}
         </article>
 
@@ -64,7 +97,7 @@
                 <input type="hidden" name="publication_action" value="mook_upload">
                 <input type="hidden" name="_token" value="{{ csrf_token('admin_mook') }}">
 
-                <label for="mook_number">Numero du mook</label>
+                <label for="mook_number">Numéro du mook</label>
                 <select id="mook_number" name="mook_number" required>
                     <option value="1">MOOK 1</option>
                     <option value="2">MOOK 2</option>
@@ -73,16 +106,30 @@
                 <label for="mook_pdf">Fichier PDF</label>
                 <input id="mook_pdf" name="mook_pdf" type="file" accept=".pdf" required>
 
-                <button type="submit" class="btn-primary">Mettre a jour le mook</button>
+                <button type="submit" class="btn-primary">Mettre à jour le mook</button>
             </form>
 
             {% if mooks is not empty %}
-                <p>Mooks disponibles:</p>
-                <ul>
-                    {% for item in mooks %}
-                        <li><a href="/uploads/mooks/{{ item }}" target="_blank" rel="noopener">{{ item }}</a></li>
-                    {% endfor %}
-                </ul>
+                <h3>Mooks publiés</h3>
+                <table class="data-table">
+                    <thead>
+                        <tr><th>Document</th><th>Date</th><th>Actions</th></tr>
+                    </thead>
+                    <tbody>
+                        {% for doc in mooks %}
+                            <tr>
+                                <td><a href="{{ doc.publicPath }}" target="_blank" rel="noopener">{{ doc.label }}</a></td>
+                                <td>{{ doc.uploadedAt|date('d/m/Y H:i') }}</td>
+                                <td>
+                                    <form method="post" action="{{ path('app_admin_publication_delete', {id: doc.id}) }}" onsubmit="return confirm('Supprimer ce mook ?')">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('admin_doc_delete_' ~ doc.id) }}">
+                                        <button type="submit" class="btn-danger btn-sm">Supprimer</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             {% endif %}
         </article>
 
@@ -105,15 +152,14 @@
             </form>
 
             {% if newsletters is not empty %}
-                <p>Dernieres newsletters:</p>
+                <h3>Dernières newsletters</h3>
                 <ul>
-                    {% for item in newsletters|slice(0, 3) %}
-                        <li>{{ item.month }} - {{ item.title }}</li>
+                    {% for item in newsletters|slice(0, 5) %}
+                        <li>{{ item.month }} — {{ item.title }}</li>
                     {% endfor %}
                 </ul>
             {% endif %}
         </article>
-
     </section>
 </div>
 {% endblock %}

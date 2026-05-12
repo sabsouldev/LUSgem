@@ -1,4 +1,4 @@
-﻿{% extends 'base.html.twig' %}
+{% extends 'base.html.twig' %}
 
 {% block title %}Comptes rendus | Les Univers Singuliers{% endblock %}
 
@@ -7,27 +7,29 @@
     <section class="content-panel">
         <h1>Comptes rendus</h1>
         <p>Historique des documents internes publiés au format PDF.</p>
-        <table class="data-table">
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Titre</th>
-                    <th>Accès</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Janvier 2026</td>
-                    <td>Compte rendu mensuel</td>
-                    <td><a href="/uploads/comptes-rendus/compte-rendu-2026-01.pdf">PDF</a></td>
-                </tr>
-                <tr>
-                    <td>Décembre 2025</td>
-                    <td>Compte rendu mensuel</td>
-                    <td><a href="/uploads/comptes-rendus/compte-rendu-2025-12.pdf">PDF</a></td>
-                </tr>
-            </tbody>
-        </table>
+
+        {% if reports is empty %}
+            <p>Aucun compte rendu n'a encore été publié.</p>
+        {% else %}
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Document</th>
+                        <th>Date de publication</th>
+                        <th>Accès</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for doc in reports %}
+                        <tr>
+                            <td>{{ doc.label }}</td>
+                            <td>{{ doc.uploadedAt|date('d/m/Y') }}</td>
+                            <td><a href="{{ doc.publicPath }}" target="_blank" rel="noopener">Télécharger (PDF)</a></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
     </section>
 </div>
 {% endblock %}
