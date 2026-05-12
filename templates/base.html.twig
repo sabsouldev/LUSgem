@@ -1,13 +1,13 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Les Univers Singuliers{% endblock %}</title>
     <meta name="description" content="Site officiel des Univers Singuliers, GEM pour adultes autistes à Périgueux.">
-    <link rel="icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
-    <link rel="apple-touch-icon" href="{{ asset('images/logo_LUS.png') }}">
-    <link rel="stylesheet" href="{{ asset('assets/styles/app.css') }}">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/images/logo_LUS.png" type="image/png">
+    <link rel="apple-touch-icon" href="/images/logo_LUS.png">
     {% block stylesheets %}{% endblock %}
     {% block javascripts %}
         {% block importmap %}{{ importmap('app') }}{% endblock %}
@@ -15,8 +15,15 @@
 </head>
 <body>
 <a class="skip-link" href="#main-content">Aller au contenu principal</a>
-<div class="decor decor-a" aria-hidden="true"></div>
-<div class="decor decor-b" aria-hidden="true"></div>
+
+<img class="gomette gomette-1" src="/images/Gomette 1.png" alt="" aria-hidden="true">
+<img class="gomette gomette-2" src="/images/Gomette 3.png" alt="" aria-hidden="true">
+<img class="gomette gomette-3" src="/images/Gomette 2.png" alt="" aria-hidden="true">
+<img class="gomette gomette-4" src="/images/Gomette 4.png" alt="" aria-hidden="true">
+<img class="gomette gomette-5" src="/images/Gomette 3.png" alt="" aria-hidden="true">
+<img class="gomette gomette-6" src="/images/Gomette 1.png" alt="" aria-hidden="true">
+<img class="gomette gomette-7" src="/images/Gomette 4.png" alt="" aria-hidden="true">
+<img class="gomette gomette-8" src="/images/Gomette 2.png" alt="" aria-hidden="true">
 
 {% include 'partials/_header.html.twig' %}
 

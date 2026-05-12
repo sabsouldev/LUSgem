@@ -8,24 +8,32 @@
             </div>
         </div>
 
-        <nav aria-label="Navigation principale" class="main-nav">
-            <a href="{{ path('app_home') }}">Accueil</a>
-            <a href="{{ path('app_mooks') }}">Mooks</a>
-            <a href="{{ path('app_contact') }}">Contact</a>
-        </nav>
+        <button class="burger-btn" aria-label="Ouvrir le menu" aria-expanded="false" onclick="this.closest('.header-inner').classList.toggle('nav-open'); this.setAttribute('aria-expanded', this.getAttribute('aria-expanded') === 'false' ? 'true' : 'false');">
+            <span class="burger-line"></span>
+            <span class="burger-line"></span>
+            <span class="burger-line"></span>
+        </button>
 
-        <nav aria-label="Acces adherents" class="member-nav">
-            {% if app.user %}
-                {% if is_granted('ROLE_ADMIN') %}
+        <div class="nav-group">
+            <nav aria-label="Navigation principale" class="main-nav">
+                <a href="{{ path('app_home') }}">Accueil</a>
+                <a href="{{ path('app_mooks') }}">Mooks</a>
+                <a href="{{ path('app_contact') }}">Contact</a>
+            </nav>
+
+            <nav aria-label="Accès adhérents" class="member-nav">
+                {% if app.user %}
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <a href="{{ path('app_admin_dashboard') }}">Administration</a>
+                    {% elseif is_granted('ROLE_MEMBER') %}
+                        <a href="{{ path('app_member_dashboard') }}">Espace adhérent</a>
+                    {% endif %}
+                    <a href="{{ path('app_logout') }}">Déconnexion</a>
+                {% else %}
+                    <a href="{{ path('app_login') }}">Connexion adhérent</a>
                     <a href="{{ path('app_admin_dashboard') }}">Administration</a>
-                {% elseif is_granted('ROLE_MEMBER') %}
-                    <a href="{{ path('app_member_dashboard') }}">Espace adherent</a>
                 {% endif %}
-                <a href="{{ path('app_logout') }}">Deconnexion</a>
-            {% else %}
-                <a href="{{ path('app_login') }}">Connexion adherent</a>
-                <a href="{{ path('app_admin_dashboard') }}">Administration</a>
-            {% endif %}
-        </nav>
+            </nav>
+        </div>
     </div>
 </header>
